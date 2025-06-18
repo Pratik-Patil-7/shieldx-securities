@@ -1,5 +1,7 @@
 package com.shieldx.securities.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +21,7 @@ public class VipPerson {
     private String email;
     private String mobile;
     private String gender;
+    private LocalDate dateOfBirth;
     private String address;
     private String profession;
     private String reasonForSecurity;
