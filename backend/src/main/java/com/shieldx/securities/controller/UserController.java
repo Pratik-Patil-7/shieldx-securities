@@ -1,6 +1,10 @@
 package com.shieldx.securities.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +30,16 @@ public class UserController {
 		return userService.registerUser(userDTO);
 	}
 	@PostMapping("/login")
-	public Login login(@RequestBody LoginDTO logindto) {
-		return  loginService.login(logindto);
+	public ResponseEntity<String> login(@RequestBody LoginDTO logindto) {
+		 
+		int remingAttempt = loginService.login(logindto);
+		if(remingAttempt==0) {
+			return new ResponseEntity<String>("Login Secussfully",HttpStatus.OK);
+		}else if(remingAttempt<=5){
+			return new ResponseEntity<String>("Login Attemept remning "+(6-remingAttempt),HttpStatus.OK);
+		}else if(remingAttempt==401){
+			return new ResponseEntity<String>("wrong username and Password ",HttpStatus.OK);
+		}else
+			return null;
 	}
 }
