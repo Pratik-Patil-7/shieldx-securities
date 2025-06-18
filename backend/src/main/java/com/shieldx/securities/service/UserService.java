@@ -25,6 +25,7 @@ public class UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
     public String registerUser(UserDTO dto) {
+    	
         if (loginRepository.existsByUsername(dto.getUsername())) {
             return "Username already exists.";
         }
