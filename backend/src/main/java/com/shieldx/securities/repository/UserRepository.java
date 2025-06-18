@@ -1,9 +1,19 @@
 package com.shieldx.securities.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.shieldx.securities.model.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
+
+	Optional<User> findByUsername(String username);
+
+	Optional<User> findByEmail(String email);
+
+	Optional<User> findByMobile(String mobile);
+	
+//	User findByUsername(String username);
 
 }
