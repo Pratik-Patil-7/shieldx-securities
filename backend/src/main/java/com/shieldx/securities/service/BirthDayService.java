@@ -1,7 +1,7 @@
 package com.shieldx.securities.service;
 
 import com.shieldx.securities.model.VipPerson;
-import com.shieldx.securities.repository.VipPersonRepository;
+import com.shieldx.securities.repository.VIPpersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,7 +14,7 @@ import java.util.List;
 public class BirthDayService {
 
     @Autowired
-    private VipPersonRepository vipRepo;
+    private VIPpersonRepository vipRepo;
 
     @Autowired
     private JavaMailSender mailSender;
