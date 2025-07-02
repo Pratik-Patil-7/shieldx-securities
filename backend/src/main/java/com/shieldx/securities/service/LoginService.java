@@ -36,7 +36,6 @@ public class LoginService {
 							return loginRepository.save(login);
 						}
 					}else {
-	
 						login.setStatus("Disable");
 						return loginRepository.save(login);
 					}
