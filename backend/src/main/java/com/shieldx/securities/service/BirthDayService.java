@@ -1,14 +1,15 @@
 package com.shieldx.securities.service;
 
-import com.shieldx.securities.model.VipPerson;
-import com.shieldx.securities.repository.VIPpersonRepository;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.shieldx.securities.model.VipPerson;
+import com.shieldx.securities.repository.VIPpersonRepository;
 
 @Service
 public class BirthDayService {

@@ -18,7 +18,8 @@ import com.shieldx.securities.repository.BookingRepository;
 import com.shieldx.securities.repository.BouncerRepository;
 import com.shieldx.securities.repository.SecurityTypeRepository;
 import com.shieldx.securities.repository.UserRepository;
-import com.shieldx.securities.repository.VipPersonRepository;
+import com.shieldx.securities.repository.VIPpersonRepository;
+
 
 @Service
 public class BookingService {
@@ -30,7 +31,7 @@ public class BookingService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private VipPersonRepository vipPersonRepository;
+	private VIPpersonRepository vipPersonRepository;
 
 	@Autowired
 	private SecurityTypeRepository securityTypeRepository;
