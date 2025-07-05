@@ -20,7 +20,7 @@ public class OtpVerification {
     private int otpId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
     private String otpCode;

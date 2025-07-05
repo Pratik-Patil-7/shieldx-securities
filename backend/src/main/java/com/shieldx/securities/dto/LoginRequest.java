@@ -3,8 +3,7 @@ package com.shieldx.securities.dto;
 import lombok.Data;
 
 @Data
-public class LoginDTO {
-    private String username;
+public class LoginRequest {
     private String email;
     private String password;
 }

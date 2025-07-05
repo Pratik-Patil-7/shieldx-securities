@@ -3,6 +3,7 @@ package com.shieldx.securities.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,10 +19,10 @@ import lombok.Data;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bookingId;
+    private Integer bookingId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",referencedColumnName = "userId")
     private User user;
 
     @ManyToOne
@@ -43,6 +44,6 @@ public class Booking {
     private LocalTime endTime;
     private String location;
     private String status = "pending";
-    private String totalPrice;
+    private double totalPrice;
 }
 

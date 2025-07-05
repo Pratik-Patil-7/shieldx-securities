@@ -20,7 +20,7 @@ public class Login {
     private int loginId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "userId")
     private User user;
 
     private String username;

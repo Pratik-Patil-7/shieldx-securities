@@ -1,33 +1,26 @@
 package com.shieldx.securities.model;
 
+import lombok.Data;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.Data;
-
-@Entity
-@Table(name = "payment")
 @Data
+@Entity
+@Table(name = "payments")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int paymentId;
+    private Integer paymentId;
 
     @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "userId")
     private User user;
 
-    private String amount;
-    private String status = "pending";
+    @ManyToOne
+    @JoinColumn(name = "booking_id", referencedColumnName = "bookingId")
+    private Booking booking;
+
+    private Double amount;
+    private String status;
     private LocalDateTime paymentDate;
 }
