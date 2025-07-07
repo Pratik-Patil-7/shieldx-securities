@@ -1,9 +1,13 @@
 package com.shieldx.securities.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class UpdatePasswordDTO {
-    private String oldPassword;
+    @NotBlank(message = "Current password is required")
+    private String currentPassword;
+    
+    @NotBlank(message = "New password is required")
     private String newPassword;
 }

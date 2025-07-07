@@ -12,20 +12,53 @@ import com.shieldx.securities.model.User;
 import com.shieldx.securities.repository.LoginRepository;
 import com.shieldx.securities.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class UserProfileService {
 
-	@Autowired
-	private UserRepository userRepo;
-	@Autowired
-	private LoginRepository loginRepo;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final UserRepository userRepo;
+	private final LoginRepository loginRepo;
+	private final PasswordEncoder passwordEncoder;
 
-	public UserProfileDTO getUserProfile(String username) {
-		User user = userRepo.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	@Autowired
+	public UserProfileService(UserRepository userRepo, LoginRepository loginRepo, PasswordEncoder passwordEncoder) {
+		this.userRepo = userRepo;
+		this.loginRepo = loginRepo;
+		this.passwordEncoder = passwordEncoder;
+	}
 
+	public UserProfileDTO getUserProfileByUserId(Integer userId) {
+		User user = userRepo.findById(userId)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
+
+		return mapToProfileDTO(user);
+	}
+
+	public String updateUserProfileByUserId(Integer userId, UserProfileDTO dto) {
+		User user = userRepo.findById(userId)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
+
+		updateUserFromDTO(user, dto);
+		userRepo.save(user);
+		return "Profile updated successfully.";
+	}
+
+	public String updatePasswordByUserId(Integer userId, UpdatePasswordDTO dto) {
+		validatePasswordDTO(dto);
+
+		Login login = loginRepo.findByUserUserId(userId) // Changed to use relationship
+				.orElseThrow(() -> new UsernameNotFoundException("Login not found for user ID: " + userId));
+
+		verifyCurrentPassword(dto.getCurrentPassword(), login.getPassword());
+
+		updateLoginPassword(login, dto.getNewPassword());
+		return "Password updated successfully";
+	}
+
+	// Helper methods
+	private UserProfileDTO mapToProfileDTO(User user) {
 		UserProfileDTO dto = new UserProfileDTO();
 		dto.setFirstName(user.getFirstName());
 		dto.setLastName(user.getLastName());
@@ -35,28 +68,30 @@ public class UserProfileService {
 		return dto;
 	}
 
-	public String updateUserProfile(String username, UserProfileDTO dto) {
-		User user = userRepo.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
+	private void updateUserFromDTO(User user, UserProfileDTO dto) {
 		user.setFirstName(dto.getFirstName());
 		user.setLastName(dto.getLastName());
 		user.setMobile(dto.getMobile());
 		user.setAddress(dto.getAddress());
-		userRepo.save(user);
-		return "Profile updated successfully.";
 	}
 
-	public String updatePassword(String username, UpdatePasswordDTO dto) {
-		Login login = loginRepo.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("Login not found"));
-
-		if (!passwordEncoder.matches(dto.getOldPassword(), login.getPassword())) {
-			throw new IllegalArgumentException("Old password is incorrect");
+	private void validatePasswordDTO(UpdatePasswordDTO dto) {
+		if (dto.getCurrentPassword() == null || dto.getCurrentPassword().trim().isEmpty()) {
+			throw new IllegalArgumentException("Current password cannot be empty");
 		}
+		if (dto.getNewPassword() == null || dto.getNewPassword().trim().isEmpty()) {
+			throw new IllegalArgumentException("New password cannot be empty");
+		}
+	}
 
-		login.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+	private void verifyCurrentPassword(String rawPassword, String encodedPassword) {
+		if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
+			throw new IllegalArgumentException("Current password is incorrect");
+		}
+	}
+
+	private void updateLoginPassword(Login login, String newPassword) {
+		login.setPassword(passwordEncoder.encode(newPassword));
 		loginRepo.save(login);
-		return "Password updated successfully.";
 	}
 }

@@ -3,6 +3,7 @@ package com.shieldx.securities.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,13 +19,14 @@ import com.shieldx.securities.dto.UserResponse;
 import com.shieldx.securities.service.UserService;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/users/p")
+@CrossOrigin(origins = "*") 
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/me")
+    @GetMapping("/profile")
     public ResponseEntity<UserResponse> getProfile(@AuthenticationPrincipal Integer userId) {
         return ResponseEntity.ok(userService.getProfile(userId));
     }
