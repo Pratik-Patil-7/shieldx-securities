@@ -8,9 +8,9 @@ public class SecurityTypeResponse {
     private String levelName;
     private String description;
     private String isArmed;
-    private String pricePerDay;
+    private double pricePerDay;
 
-    public SecurityTypeResponse(int stId, String levelName, String description, String isArmed, String pricePerDay) {
+    public SecurityTypeResponse(int stId, String levelName, String description, String isArmed, double pricePerDay) {
         this.stId = stId;
         this.levelName = levelName;
         this.description = description;

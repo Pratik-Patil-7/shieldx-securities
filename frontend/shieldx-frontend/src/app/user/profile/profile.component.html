@@ -1,1 +1,141 @@
-<p>profile works!</p>
+<!-- profile.component.html -->
+<div class="profile-container">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card profile-card shadow">
+          <div class="card-header bg-primary text-white">
+            <h2 class="h4 mb-0">
+              <i class="bi bi-person-circle me-2"></i>User Profile
+            </h2>
+          </div>
+
+          <!-- Profile View -->
+          <div class="card-body" *ngIf="!isEditing && !isChangingPassword">
+            <div class="alert alert-success" *ngIf="errorMessage.includes('successfully')">
+              <i class="bi bi-check-circle-fill me-2"></i>{{ errorMessage }}
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="profile-field">
+                  <label class="text-muted small">First Name</label>
+                  <p class="fs-5">{{ currentUser?.firstName || 'Not provided' }}</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="profile-field">
+                  <label class="text-muted small">Last Name</label>
+                  <p class="fs-5">{{ currentUser?.lastName || 'Not provided' }}</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="profile-field">
+                  <label class="text-muted small">Email</label>
+                  <p class="fs-5">{{ currentUser?.email || 'Not provided' }}</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="profile-field">
+                  <label class="text-muted small">Mobile</label>
+                  <p class="fs-5">{{ currentUser?.mobile || 'Not provided' }}</p>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="profile-field">
+                  <label class="text-muted small">Address</label>
+                  <p class="fs-5">{{ currentUser?.address || 'Not provided' }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4 gap-2">
+              <button class="btn btn-outline-primary" (click)="editProfile()">
+                <i class="bi bi-pencil-square me-2"></i>Edit Profile
+              </button>
+              <button class="btn btn-outline-warning" (click)="changePassword()">
+                <i class="bi bi-shield-lock me-2"></i>Change Password
+              </button>
+            </div>
+          </div>
+
+          <!-- Edit Profile Form -->
+          <div class="card-body" *ngIf="isEditing">
+            <div class="alert alert-danger" *ngIf="errorMessage && !errorMessage.includes('successfully')">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorMessage }}
+            </div>
+
+            <form #editForm="ngForm" (ngSubmit)="onUpdateProfile(editForm)" class="needs-validation" novalidate>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="firstName" class="form-label">First Name</label>
+                  <input id="firstName" name="firstName" [(ngModel)]="editProfileData.firstName"
+                         class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="lastName" class="form-label">Last Name</label>
+                  <input id="lastName" name="lastName" [(ngModel)]="editProfileData.lastName"
+                         class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="email" class="form-label">Email</label>
+                  <input id="email" name="email" [(ngModel)]="editProfileData.email"
+                         class="form-control" type="email" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="mobile" class="form-label">Mobile</label>
+                  <input id="mobile" name="mobile" [(ngModel)]="editProfileData.mobile"
+                         class="form-control" required>
+                </div>
+                <div class="col-12">
+                  <label for="address" class="form-label">Address</label>
+                  <textarea id="address" name="address" [(ngModel)]="editProfileData.address"
+                            class="form-control" rows="3" required></textarea>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end mt-4 gap-2">
+                <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">
+                  <i class="bi bi-x-circle me-2"></i>Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">
+                  <i class="bi bi-save me-2"></i>Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Change Password Form -->
+          <div class="card-body" *ngIf="isChangingPassword">
+            <div class="alert alert-danger" *ngIf="errorMessage && !errorMessage.includes('successfully')">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorMessage }}
+            </div>
+
+            <form #passwordForm="ngForm" (ngSubmit)="onChangePassword(passwordForm)" class="needs-validation" novalidate>
+              <div class="mb-3">
+                <label for="currentPassword" class="form-label">Current Password</label>
+                <input id="currentPassword" name="currentPassword" [(ngModel)]="passwordData.currentPassword"
+                       class="form-control" type="password" required>
+              </div>
+              <div class="mb-3">
+                <label for="newPassword" class="form-label">New Password</label>
+                <input id="newPassword" name="newPassword" [(ngModel)]="passwordData.newPassword"
+                       class="form-control" type="password" required minlength="8">
+                <div class="form-text">Password must be at least 8 characters</div>
+              </div>
+
+              <div class="d-flex justify-content-end mt-4 gap-2">
+                <button type="button" class="btn btn-outline-secondary" (click)="cancelPasswordChange()">
+                  <i class="bi bi-x-circle me-2"></i>Cancel
+                </button>
+                <button type="submit" class="btn btn-warning" [disabled]="passwordForm.invalid">
+                  <i class="bi bi-shield-lock me-2"></i>Update Password
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

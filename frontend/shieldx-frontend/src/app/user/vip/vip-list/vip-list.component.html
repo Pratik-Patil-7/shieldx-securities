@@ -1,0 +1,46 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>VIP Persons</h2>
+    <div>
+      <button class="btn btn-primary me-2" routerLink="/vip/new">Add VIP</button>
+      <button class="btn btn-outline-primary" routerLink="/vip/self">Add Self</button>
+    </div>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Address</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let vip of vipPersons">
+              <td>{{ vip.name }}</td>
+              <td>{{ vip.email }}</td>
+              <td>{{ vip.mobile }}</td>
+              <td>{{ vip.address }}</td>
+              <td>
+                <button class="btn btn-sm btn-primary me-2" [routerLink]="['/vip/edit', vip.vipId]">Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteVipPerson(vip.vipId)">Delete</button>
+              </td>
+            </tr>
+            <tr *ngIf="vipPersons.length === 0">
+              <td colspan="5" class="text-center">No VIP persons found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

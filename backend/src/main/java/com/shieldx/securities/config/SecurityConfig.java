@@ -34,7 +34,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()  // Allow all auth endpoints
-                .requestMatchers("/api/bookings/**", "/api/users/**", "/api/payments/**", "/api/jobs/**").authenticated()
+                .requestMatchers("/api/bookings/**", "/api/users/**", "/api/payments/**", "/api/jobs/**","/api/vip/**","/api/security/**").authenticated()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().denyAll()
             )

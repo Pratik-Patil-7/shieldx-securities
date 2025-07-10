@@ -1,0 +1,356 @@
+<div class="booking-container container-fluid py-4">
+  <!-- Header Section -->
+  <div
+    class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <h1 class="mb-0">
+      <i class="fas fa-calendar-check me-2 text-primary"></i>My Bookings
+    </h1>
+    <button class="btn btn-primary" (click)="toggleNewBookingForm()"
+      aria-label="Create new booking">
+      <i class="fas fa-plus me-2"></i>New Booking
+    </button>
+  </div>
+
+  <!-- Alert Messages -->
+  <div *ngIf="successMessage"
+    class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fas fa-check-circle me-2"></i>{{ successMessage }}
+    <button type="button" class="btn-close" (click)="successMessage = ''"
+      aria-label="Close"></button>
+  </div>
+  <div *ngIf="errorMessage"
+    class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="fas fa-exclamation-circle me-2"></i>{{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = ''"
+      aria-label="Close"></button>
+  </div>
+
+  <!-- New Booking Form -->
+  <section *ngIf="showNewBookingForm" class="booking-form-section mb-5">
+    <div class="card shadow-lg border-0">
+      <div class="card-header bg-primary text-white py-3">
+        <h2 class="h5 mb-0 d-flex align-items-center">
+          <i class="fas fa-plus-circle me-2"></i>Create New Booking
+        </h2>
+      </div>
+      <div class="card-body p-4">
+        <form (ngSubmit)="createBooking()" #bookingForm="ngForm">
+          <div class="row g-4">
+            <!-- VIP Selection -->
+            <div class="col-md-6">
+              <label for="vipSelect" class="form-label fw-bold">VIP
+                Person</label>
+              <select id="vipSelect" class="form-select"
+                [(ngModel)]="newBooking.vipId" name="vipId" required>
+                <option value disabled selected>Select VIP person...</option>
+                <option *ngFor="let vip of vipPersons" [value]="vip.vipId">
+                  {{ vip.name }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Security Type Selection -->
+            <div class="col-md-6">
+              <label for="securityTypeSelect"
+                class="form-label fw-bold">Security Type</label>
+              <select id="securityTypeSelect" class="form-select"
+                [(ngModel)]="newBooking.securityTypeId"
+                name="securityTypeId" required>
+                <option value disabled selected>Select security type...</option>
+                <option *ngFor="let type of securityTypes" [value]="type.stId">
+                  {{ type.description }} ({{ type.levelName }}) -
+                  ₹{{ type.pricePerDay | number:'1.2-2' }}/day
+                  <span *ngIf="type.isArmed" class="ms-2">🔫 Armed</span>
+                </option>
+              </select>
+            </div>
+
+            <!-- Security Type Details -->
+            <div *ngIf="newBooking.securityTypeId" class="col-12">
+              <div class="card bg-light border-0">
+                <div class="card-body p-3">
+                  <div class="row align-items-center">
+                    <div class="col-md-6">
+                      <h5 class="mb-1">{{ getSelectedSecurityType()?.description
+                        }}</h5>
+                      <div class="d-flex align-items-center">
+                        <span class="badge me-2" [ngClass]="{
+                          'bg-danger': getSelectedSecurityType()?.isArmed,
+                          'bg-secondary': !getSelectedSecurityType()?.isArmed
+                        }">
+                          {{ getSelectedSecurityType()?.isArmed ? 'Armed' :
+                          'Unarmed' }}
+                        </span>
+                        <span class="text-muted">{{
+                          getSelectedSecurityType()?.levelName }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                      <div class="h5 mb-0 text-primary">
+                        ₹{{ getSelectedSecurityType()?.pricePerDay |
+                        number:'1.0-0' }}<small class="text-muted">/day</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Date Range -->
+            <div class="col-md-6">
+              <label for="startDate" class="form-label fw-bold">Start
+                Date</label>
+              <input id="startDate" type="date" class="form-control"
+                [(ngModel)]="newBooking.startDate"
+                name="startDate" required>
+            </div>
+            <div class="col-md-6">
+              <label for="endDate" class="form-label fw-bold">End Date</label>
+              <input id="endDate" type="date" class="form-control"
+                [(ngModel)]="newBooking.endDate"
+                name="endDate" required>
+            </div>
+
+            <!-- Time Range -->
+            <div class="col-md-6">
+              <label for="startTime" class="form-label fw-bold">Start
+                Time</label>
+              <input id="startTime" type="time" class="form-control"
+                [(ngModel)]="newBooking.startTime"
+                name="startTime" required>
+            </div>
+            <div class="col-md-6">
+              <label for="endTime" class="form-label fw-bold">End Time</label>
+              <input id="endTime" type="time" class="form-control"
+                [(ngModel)]="newBooking.endTime"
+                name="endTime" required>
+            </div>
+
+            <!-- Location -->
+            <div class="col-12">
+              <label for="location" class="form-label fw-bold">Location</label>
+              <input id="location" type="text" class="form-control"
+                [(ngModel)]="newBooking.location"
+                name="location" placeholder="Enter event location" required>
+            </div>
+
+            <!-- Bouncer Count -->
+            <div class="col-md-6">
+              <label for="bouncerCount" class="form-label fw-bold">Bouncer
+                Count</label>
+              <input id="bouncerCount" type="number" class="form-control"
+                [(ngModel)]="newBooking.bouncerCount"
+                name="bouncerCount" min="1" required>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="col-12">
+              <div
+                class="d-flex flex-column flex-sm-row justify-content-between align-items-center pt-4 border-top gap-3">
+                <button type="button"
+                  class="btn btn-outline-secondary flex-grow-1 flex-sm-grow-0 w-100 w-sm-auto"
+                  (click)="toggleNewBookingForm()">
+                  <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <div
+                  class="d-flex flex-column flex-sm-row gap-3 w-100 w-sm-auto">
+                  <button type="button" class="btn btn-info flex-grow-1"
+                    (click)="calculateCost()"
+                    [disabled]="isLoading || !bookingForm.form.valid">
+                    <i class="fas fa-calculator me-1"></i>Calculate Cost
+                  </button>
+                  <button type="submit" class="btn btn-success flex-grow-1"
+                    [disabled]="!estimatedCost || isLoading">
+                    <i class="fas fa-check me-1"></i>Create Booking
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estimated Cost -->
+            <div *ngIf="estimatedCost" class="col-12">
+              <div
+                class="alert alert-info mb-0 d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="fas fa-info-circle me-2"></i>
+                  <strong>Estimated Cost:</strong> ₹{{ estimatedCost |
+                  number:'1.2-2' }}
+                </div>
+                <small class="text-muted">Based on selected security type and
+                  duration</small>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Navigation Tabs -->
+  <nav class="booking-tabs mb-4">
+    <ul class="nav nav-tabs nav-justified flex-nowrap overflow-auto">
+      <li class="nav-item" *ngFor="let tab of tabs">
+        <a class="nav-link d-flex flex-column align-items-center py-3"
+          [class.active]="currentTab === tab.name"
+          (click)="changeTab(tab.name)">
+          <i class="fas mb-1"
+            [class.fa-calendar-alt]="tab.name === 'current'"
+            [class.fa-history]="tab.name === 'past'"
+            [class.fa-ban]="tab.name === 'cancelled'"></i>
+          {{ tab.label }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="text-center my-5 py-4">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"
+      role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3">Loading bookings...</p>
+  </div>
+
+  <!-- Booking List -->
+  <section *ngIf="!isLoading" class="booking-list">
+    <div *ngIf="filteredBookings.length === 0" class="alert alert-info">
+      <i class="fas fa-info-circle me-2"></i>No bookings found for this category
+    </div>
+
+    <div class="row g-4">
+      <div *ngFor="let booking of filteredBookings" class="col-12">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex flex-column flex-md-row justify-content-between">
+              <div class="mb-3 mb-md-0">
+                <div class="d-flex align-items-center mb-2">
+                  <h3 class="h5 mb-0 me-3">{{ booking.vipName || 'VIP' }}</h3>
+                  <span class="badge" [ngClass]="{
+                    'bg-success': booking.status === 'confirmed',
+                    'bg-warning text-dark': booking.status === 'pending',
+                    'bg-danger': booking.status === 'cancelled'
+                  }">
+                    {{ booking.status | titlecase }}
+                  </span>
+                </div>
+                <p class="mb-1 text-muted">
+                  <i class="fas fa-map-marker-alt me-2"></i>{{ booking.location
+                  }}
+                </p>
+                <p class="mb-1 text-muted">
+                  <i class="fas fa-calendar-alt me-2"></i>
+                  {{ booking.startDate | date }} - {{ booking.endDate | date }}
+                </p>
+              </div>
+              <div class="d-flex flex-column align-items-md-end">
+                <div class="h4 text-primary mb-2">
+                  ₹{{ booking.totalPrice | number:'1.2-2' }}
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-outline-primary"
+                    (click)="showBookingDetails(booking)">
+                    <i class="fas fa-eye me-1"></i>Details
+                  </button>
+                  <button
+                    *ngIf="booking.status === 'confirmed' || booking.status === 'pending'"
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="cancelBooking(booking.bookingId)">
+                    <i class="fas fa-times me-1"></i>Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking Details Modal -->
+  <div *ngIf="selectedBooking" class="modal fade show d-block" tabindex="-1"
+    role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h2 class="modal-title h5">
+            <i class="fas fa-info-circle me-2"></i>Booking Details
+          </h2>
+          <button type="button" class="btn-close btn-close-white"
+            (click)="closeBookingDetails()"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+              <h3 class="h6 text-muted mb-3 border-bottom pb-2">
+                <i class="fas fa-calendar me-2"></i>Booking Information
+              </h3>
+              <ul class="list-unstyled">
+                <li class="mb-3">
+                  <strong><i class="fas fa-user me-2"></i>VIP:</strong>
+                  {{ selectedBooking.vipName || 'N/A' }}
+                </li>
+                <li class="mb-3">
+                  <strong><i
+                      class="fas fa-map-marker-alt me-2"></i>Location:</strong>
+                  {{ selectedBooking.location }}
+                </li>
+                <li class="mb-3">
+                  <strong><i
+                      class="fas fa-calendar-day me-2"></i>Dates:</strong>
+                  {{ selectedBooking.startDate | date }} - {{
+                  selectedBooking.endDate | date }}
+                </li>
+                <li>
+                  <strong><i class="fas fa-clock me-2"></i>Times:</strong>
+                  {{ selectedBooking.startTime }} - {{ selectedBooking.endTime
+                  }}
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h3 class="h6 text-muted mb-3 border-bottom pb-2">
+                <i class="fas fa-shield-alt me-2"></i>Security Details
+              </h3>
+              <ul class="list-unstyled">
+                <li class="mb-3">
+                  <strong><i class="fas fa-lock me-2"></i>Type:</strong>
+                  {{ selectedBooking.securityTypeName || 'Standard' }}
+                </li>
+                <li class="mb-3">
+                  <strong><i
+                      class="fas fa-user-shield me-2"></i>Bouncers:</strong>
+                  {{ selectedBooking.bouncerCount }}
+                </li>
+                <li class="mb-3">
+                  <strong><i
+                      class="fas fa-info-circle me-2"></i>Status:</strong>
+                  <span [ngClass]="{
+                    'text-success': selectedBooking.status === 'confirmed',
+                    'text-warning': selectedBooking.status === 'pending',
+                    'text-danger': selectedBooking.status === 'cancelled'
+                  }">
+                    {{ selectedBooking.status | titlecase }}
+                  </span>
+                </li>
+                <li>
+                  <strong><i class="fas fa-dollar-sign me-2"></i>Total
+                    Price:</strong>
+                  ₹{{ selectedBooking.totalPrice | number:'1.2-2' }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            (click)="closeBookingDetails()">
+            <i class="fas fa-times me-1"></i>Close
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+  </div>
+</div>

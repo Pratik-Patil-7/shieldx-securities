@@ -29,7 +29,12 @@ public class SecurityTypeService {
 		return securityTypeRepo.findAll();
 	}
 	
-	 public List<SecurityTypeResponse> getAllSecurityTypes() {
+	 public List<SecurityType> getAllSecurityTypes() {
+	        return securityTypeRepo.findAll();
+	    }
+	 
+	 
+	 public List<SecurityTypeResponse> getAllSecurityType() {
 	        return securityTypeRepo.findAll().stream()
 	                .map(st -> new SecurityTypeResponse(st.getStId(), st.getLevelName(), 
 	                                                   st.getDescription(), st.getIsArmed(), st.getPricePerDay()))
@@ -43,7 +48,7 @@ public class SecurityTypeService {
 	    }
 
 	    public List<SecurityTypeResponse> getPricingDetails() {
-	        return getAllSecurityTypes();
+	        return getAllSecurityType();
 	    }
 
 	    public SecurityTypeResponse addSecurityType(SecurityTypeRequest request) {

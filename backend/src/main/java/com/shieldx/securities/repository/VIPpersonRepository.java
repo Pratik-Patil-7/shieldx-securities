@@ -23,5 +23,7 @@ public interface VIPpersonRepository extends JpaRepository<VipPerson, Integer> {
 
     @Query("SELECT v FROM VipPerson v WHERE v.dateOfBirth = :dob")
     List<VipPerson> findByDateOfBirth(@Param("dob") LocalDate dateOfBirth);
-	
+
+    @Query("SELECT v FROM VipPerson v WHERE v.user.userId = :id") // Adjusted to navigate user relationship
+    List<VipPerson> findByUserId(@Param("id") Integer userId);
 }

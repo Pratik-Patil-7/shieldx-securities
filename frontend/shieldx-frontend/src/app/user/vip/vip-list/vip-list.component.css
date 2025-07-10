@@ -1,0 +1,41 @@
+/* vip-list.component.css */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #212529;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+/* vip-form.component.css */
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.375rem;
+}
+
+@media (max-width: 768px) {
+  .card {
+    border-radius: 0;
+  }
+
+  .form-control, .form-select {
+    padding: 0.5rem;
+  }
+}

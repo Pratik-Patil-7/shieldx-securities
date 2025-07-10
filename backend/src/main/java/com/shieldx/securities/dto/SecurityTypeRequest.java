@@ -7,5 +7,5 @@ public class SecurityTypeRequest {
     private String levelName;
     private String description;
     private String isArmed;
-    private String pricePerDay;
+    private double pricePerDay;
 }

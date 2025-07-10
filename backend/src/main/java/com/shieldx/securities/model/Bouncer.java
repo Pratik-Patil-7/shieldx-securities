@@ -1,16 +1,14 @@
 package com.shieldx.securities.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+import java.util.List;
 
 @Entity
 @Table(name = "bouncer")
 @Data
 public class Bouncer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bouncerId;
@@ -27,4 +25,7 @@ public class Bouncer {
     private String photoUrl;
     private String isArmed;
     private String status = "pending";
+
+    @ManyToMany(mappedBy = "bouncers")
+    private List<Booking> bookings;
 }

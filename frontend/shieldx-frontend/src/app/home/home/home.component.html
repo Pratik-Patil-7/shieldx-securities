@@ -1,350 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShieldX - Professional Security Services</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <!-- <link rel="stylesheet" href="styles.css"> -->
-</head>
-<body>
+  </head>
+  <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <!-- <img src="https://via.placeholder.com/50x50" alt="ShieldX Logo" class="me-2"> -->
-                ShieldX
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#testimonials">Testimonials</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      ShieldX
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#services">Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#about">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#testimonials">Testimonials</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#contact">Contact</a>
+        </li>
+      </ul>
 
+      <!-- Conditional rendering based on authentication state -->
+      <div class="d-flex" *ngIf="!isAuthenticated(); else userMenu">
+        <a routerLink="/login" class="btn btn-outline-light me-2">Login</a>
+        <a routerLink="/register" class="btn btn-danger">Register</a>
+      </div>
+
+      <ng-template #userMenu>
+        <div class="dropdown">
+          <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+            {{ userName || 'User' }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" routerLink="user-dashboard">Dashboard</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+          </ul>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</nav>
     <!-- Hero Section -->
     <header class="hero-section">
-        <div class="container h-100">
-            <div class="row h-100 align-items-center">
-                <div class="col-lg-8 text-white">
-                    <h1 class="display-3 fw-bold mb-4">YOUR SAFETY, OUR PRIORITY</h1>
-                    <h2 class="display-5 mb-3">Professional Security Services</h2>
-                    <p class="lead mb-4">Safeguarding Your Events, Businesses, and Premises<br>Available 24/7 for Your Peace of Mind</p>
-                    <div class="divider bg-danger mb-4"></div>
-                    <a href="#contact" class="btn btn-danger btn-lg px-4 me-2">GET A QUOTE</a>
-                    <a href="#services" class="btn btn-outline-light btn-lg px-4">OUR SERVICES</a>
-                </div>
-            </div>
+      <div class="container h-100">
+        <div class="row h-100 align-items-center">
+          <div class="col-lg-8 text-white">
+            <h1 class="display-3 fw-bold mb-4">YOUR SAFETY, OUR PRIORITY</h1>
+            <h2 class="display-5 mb-3">Professional Security Services</h2>
+            <p class="lead mb-4">Safeguarding Your Events, Businesses, and
+              Premises<br>Available 24/7 for Your Peace of Mind</p>
+            <div class="divider bg-danger mb-4"></div>
+            <a href="#contact" class="btn btn-danger btn-lg px-4 me-2">GET A
+              QUOTE</a>
+            <a href="#services" class="btn btn-outline-light btn-lg px-4">OUR
+              SERVICES</a>
+          </div>
         </div>
+      </div>
     </header>
 
     <!-- Stats Section -->
     <section class="stats-section py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-3">
-                    <div class="stat-item">
-                        <h3 class="display-4 fw-bold">15+</h3>
-                        <p class="mb-0">Years Experience</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-item">
-                        <h3 class="display-4 fw-bold">500+</h3>
-                        <p class="mb-0">Clients Served</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-item">
-                        <h3 class="display-4 fw-bold">24/7</h3>
-                        <p class="mb-0">Availability</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-item">
-                        <h3 class="display-4 fw-bold">100%</h3>
-                        <p class="mb-0">Satisfaction</p>
-                    </div>
-                </div>
+      <div class="container">
+        <div class="row text-center">
+          <div class="col-md-3">
+            <div class="stat-item">
+              <h3 class="display-4 fw-bold">15+</h3>
+              <p class="mb-0">Years Experience</p>
             </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-item">
+              <h3 class="display-4 fw-bold">500+</h3>
+              <p class="mb-0">Clients Served</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-item">
+              <h3 class="display-4 fw-bold">24/7</h3>
+              <p class="mb-0">Availability</p>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-item">
+              <h3 class="display-4 fw-bold">100%</h3>
+              <p class="mb-0">Satisfaction</p>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Services Section -->
     <section id="services" class="py-5 bg-light">
-        <div class="container">
-            <div class="section-header text-center mb-5">
-                <h2 class="display-4 fw-bold">Our Security Services</h2>
-                <p class="lead">Comprehensive protection solutions tailored to your needs</p>
-                <div class="divider bg-danger mx-auto"></div>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
-                    <div class="card service-card h-100 border-0 shadow-sm">
-                        <img src="https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="card-img-top" alt="Corporate Security">
-                        <div class="card-body text-center">
-                            <i class="fas fa-building fa-3x mb-3 text-primary"></i>
-                            <h3 class="card-title">Corporate Security</h3>
-                            <p class="card-text">Professional security solutions for businesses of all sizes with trained personnel.</p>
-                            <a href="#" class="btn btn-outline-primary">Learn More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card service-card h-100 border-0 shadow-sm">
-                        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="card-img-top" alt="Event Security">
-                        <div class="card-body text-center">
-                            <i class="fas fa-calendar-alt fa-3x mb-3 text-success"></i>
-                            <h3 class="card-title">Event Security</h3>
-                            <p class="card-text">Expert security personnel for concerts, conferences, and private events.</p>
-                            <a href="#" class="btn btn-outline-success">Learn More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card service-card h-100 border-0 shadow-sm">
-                        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1173&q=80" class="card-img-top" alt="Residential Security">
-                        <div class="card-body text-center">
-                            <i class="fas fa-home fa-3x mb-3 text-warning"></i>
-                            <h3 class="card-title">Residential Security</h3>
-                            <p class="card-text">Protection for your home and family with discreet monitoring solutions.</p>
-                            <a href="#" class="btn btn-outline-warning">Learn More</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="card service-card h-100 border-0 shadow-sm">
-                        <img src="https://images.unsplash.com/photo-1584433144859-1fc3ab64a957?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1130&q=80" class="card-img-top" alt="VIP Protection">
-                        <div class="card-body text-center">
-                            <i class="fas fa-shield-alt fa-3x mb-3 text-danger"></i>
-                            <h3 class="card-title">VIP Protection</h3>
-                            <p class="card-text">Discreet and professional personal protection for high-profile individuals.</p>
-                            <a href="#" class="btn btn-outline-danger">Learn More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="section-header text-center mb-5">
+          <h2 class="display-4 fw-bold">Our Security Services</h2>
+          <p class="lead">Comprehensive protection solutions tailored to your
+            needs</p>
+          <div class="divider bg-danger mx-auto"></div>
         </div>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="card service-card h-100 border-0 shadow-sm">
+              <img
+                src="https://images.unsplash.com/photo-1589652717521-10c0d092dea9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                class="card-img-top" alt="Corporate Security">
+              <div class="card-body text-center">
+                <i class="fas fa-building fa-3x mb-3 text-primary"></i>
+                <h3 class="card-title">Corporate Security</h3>
+                <p class="card-text">Professional security solutions for
+                  businesses of all sizes with trained personnel.</p>
+                <a href="#" class="btn btn-outline-primary">Learn More</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card service-card h-100 border-0 shadow-sm">
+              <img
+                src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                class="card-img-top" alt="Event Security">
+              <div class="card-body text-center">
+                <i class="fas fa-calendar-alt fa-3x mb-3 text-success"></i>
+                <h3 class="card-title">Event Security</h3>
+                <p class="card-text">Expert security personnel for concerts,
+                  conferences, and private events.</p>
+                <a href="#" class="btn btn-outline-success">Learn More</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card service-card h-100 border-0 shadow-sm">
+              <img
+                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1173&q=80"
+                class="card-img-top" alt="Residential Security">
+              <div class="card-body text-center">
+                <i class="fas fa-home fa-3x mb-3 text-warning"></i>
+                <h3 class="card-title">Residential Security</h3>
+                <p class="card-text">Protection for your home and family with
+                  discreet monitoring solutions.</p>
+                <a href="#" class="btn btn-outline-warning">Learn More</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card service-card h-100 border-0 shadow-sm">
+              <img
+                src="https://images.unsplash.com/photo-1584433144859-1fc3ab64a957?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1130&q=80"
+                class="card-img-top" alt="VIP Protection">
+              <div class="card-body text-center">
+                <i class="fas fa-shield-alt fa-3x mb-3 text-danger"></i>
+                <h3 class="card-title">VIP Protection</h3>
+                <p class="card-text">Discreet and professional personal
+                  protection for high-profile individuals.</p>
+                <a href="#" class="btn btn-outline-danger">Learn More</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- About Section -->
     <section id="about" class="py-5">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="About ShieldX" class="img-fluid rounded shadow">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <img
+              src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+              alt="About ShieldX" class="img-fluid rounded shadow">
+          </div>
+          <div class="col-lg-6">
+            <h2 class="display-4 fw-bold mb-4">About ShieldX</h2>
+            <p class="lead">We are a leading security services provider with
+              over 15 years of experience in the industry.</p>
+            <p>Our team of highly trained professionals is dedicated to ensuring
+              your safety and peace of mind. We combine cutting-edge technology
+              with human expertise to deliver comprehensive security
+              solutions.</p>
+            <div class="row mt-4">
+              <div class="col-md-6 mb-3">
+                <div class="d-flex">
+                  <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                  <div>
+                    <h5 class="fw-bold">Licensed Professionals</h5>
+                    <p class="mb-0">All our staff are fully licensed and
+                      vetted</p>
+                  </div>
                 </div>
-                <div class="col-lg-6">
-                    <h2 class="display-4 fw-bold mb-4">About ShieldX</h2>
-                    <p class="lead">We are a leading security services provider with over 15 years of experience in the industry.</p>
-                    <p>Our team of highly trained professionals is dedicated to ensuring your safety and peace of mind. We combine cutting-edge technology with human expertise to deliver comprehensive security solutions.</p>
-                    <div class="row mt-4">
-                        <div class="col-md-6 mb-3">
-                            <div class="d-flex">
-                                <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
-                                <div>
-                                    <h5 class="fw-bold">Licensed Professionals</h5>
-                                    <p class="mb-0">All our staff are fully licensed and vetted</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="d-flex">
-                                <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
-                                <div>
-                                    <h5 class="fw-bold">24/7 Monitoring</h5>
-                                    <p class="mb-0">Round-the-clock surveillance and response</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="d-flex">
-                                <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
-                                <div>
-                                    <h5 class="fw-bold">Custom Solutions</h5>
-                                    <p class="mb-0">Tailored to your specific security needs</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="d-flex">
-                                <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
-                                <div>
-                                    <h5 class="fw-bold">Rapid Response</h5>
-                                    <p class="mb-0">Quick reaction times in emergencies</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#contact" class="btn btn-primary mt-3 px-4">Contact Us</a>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="d-flex">
+                  <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                  <div>
+                    <h5 class="fw-bold">24/7 Monitoring</h5>
+                    <p class="mb-0">Round-the-clock surveillance and
+                      response</p>
+                  </div>
                 </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="d-flex">
+                  <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                  <div>
+                    <h5 class="fw-bold">Custom Solutions</h5>
+                    <p class="mb-0">Tailored to your specific security needs</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="d-flex">
+                  <i class="fas fa-check-circle text-primary me-3 mt-1"></i>
+                  <div>
+                    <h5 class="fw-bold">Rapid Response</h5>
+                    <p class="mb-0">Quick reaction times in emergencies</p>
+                  </div>
+                </div>
+              </div>
             </div>
+            <a href="#contact" class="btn btn-primary mt-3 px-4">Contact Us</a>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Testimonials Section -->
     <section id="testimonials" class="py-5 bg-dark text-white">
-        <div class="container">
-            <div class="section-header text-center mb-5">
-                <h2 class="display-4 fw-bold">Client Testimonials</h2>
-                <p class="lead">What our clients say about our services</p>
-                <div class="divider bg-danger mx-auto"></div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <div class="card testimonial-card h-100 border-0 bg-secondary">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <i class="fas fa-quote-left fa-2x text-light opacity-25"></i>
-                            </div>
-                            <p class="card-text mb-4">ShieldX provided exceptional security for our corporate event. Their team was professional, discreet, and highly effective in managing crowd control.</p>
-                            <div class="d-flex align-items-center">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client" class="rounded-circle me-3" width="60">
-                                <div>
-                                    <h5 class="mb-1">Michael Johnson</h5>
-                                    <p class="mb-0 text-muted">CEO, TechCorp</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="card testimonial-card h-100 border-0 bg-secondary">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <i class="fas fa-quote-left fa-2x text-light opacity-25"></i>
-                            </div>
-                            <p class="card-text mb-4">The residential security team has given us peace of mind we didn't know was possible. Their attention to detail is remarkable.</p>
-                            <div class="d-flex align-items-center">
-                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="rounded-circle me-3" width="60">
-                                <div>
-                                    <h5 class="mb-1">Sarah Williams</h5>
-                                    <p class="mb-0 text-muted">Homeowner</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 mb-4">
-                    <div class="card testimonial-card h-100 border-0 bg-secondary">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <i class="fas fa-quote-left fa-2x text-light opacity-25"></i>
-                            </div>
-                            <p class="card-text mb-4">We've been using ShieldX for all our VIP events. Their executive protection team is the best in the business - highly recommended.</p>
-                            <div class="d-flex align-items-center">
-                                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Client" class="rounded-circle me-3" width="60">
-                                <div>
-                                    <h5 class="mb-1">David Chen</h5>
-                                    <p class="mb-0 text-muted">Event Manager</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="section-header text-center mb-5">
+          <h2 class="display-4 fw-bold">Client Testimonials</h2>
+          <p class="lead">What our clients say about our services</p>
+          <div class="divider bg-danger mx-auto"></div>
         </div>
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <div class="card testimonial-card h-100 border-0 bg-secondary">
+              <div class="card-body">
+                <div class="mb-4">
+                  <i class="fas fa-quote-left fa-2x text-light opacity-25"></i>
+                </div>
+                <p class="card-text mb-4">ShieldX provided exceptional security
+                  for our corporate event. Their team was professional,
+                  discreet, and highly effective in managing crowd control.</p>
+                <div class="d-flex align-items-center">
+                  <img src="https://randomuser.me/api/portraits/men/32.jpg"
+                    alt="Client" class="rounded-circle me-3" width="60">
+                  <div>
+                    <h5 class="mb-1">Michael Johnson</h5>
+                    <p class="mb-0 text-muted">CEO, TechCorp</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 mb-4">
+            <div class="card testimonial-card h-100 border-0 bg-secondary">
+              <div class="card-body">
+                <div class="mb-4">
+                  <i class="fas fa-quote-left fa-2x text-light opacity-25"></i>
+                </div>
+                <p class="card-text mb-4">The residential security team has
+                  given us peace of mind we didn't know was possible. Their
+                  attention to detail is remarkable.</p>
+                <div class="d-flex align-items-center">
+                  <img src="https://randomuser.me/api/portraits/women/44.jpg"
+                    alt="Client" class="rounded-circle me-3" width="60">
+                  <div>
+                    <h5 class="mb-1">Sarah Williams</h5>
+                    <p class="mb-0 text-muted">Homeowner</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 mb-4">
+            <div class="card testimonial-card h-100 border-0 bg-secondary">
+              <div class="card-body">
+                <div class="mb-4">
+                  <i class="fas fa-quote-left fa-2x text-light opacity-25"></i>
+                </div>
+                <p class="card-text mb-4">We've been using ShieldX for all our
+                  VIP events. Their executive protection team is the best in the
+                  business - highly recommended.</p>
+                <div class="d-flex align-items-center">
+                  <img src="https://randomuser.me/api/portraits/men/75.jpg"
+                    alt="Client" class="rounded-circle me-3" width="60">
+                  <div>
+                    <h5 class="mb-1">David Chen</h5>
+                    <p class="mb-0 text-muted">Event Manager</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Contact Section -->
     <section id="contact" class="py-5 bg-light">
-        <div class="container">
-            <div class="section-header text-center mb-5">
-                <h2 class="display-4 fw-bold">Contact Us</h2>
-                <p class="lead">Get in touch for a free security consultation</p>
-                <div class="divider bg-danger mx-auto"></div>
-            </div>
-            <div class="row">
-                <div class="col-lg-5 mb-5 mb-lg-0">
-                    <div class="contact-info">
-                        <h3 class="fw-bold mb-4">Our Office</h3>
-                        <div class="d-flex mb-4">
-                            <i class="fas fa-map-marker-alt text-primary me-3 mt-1"></i>
-                            <div>
-                                <h5 class="fw-bold">Address</h5>
-                                <p class="mb-0">123 Security Avenue, Safe City, SC 12345</p>
-                            </div>
-                        </div>
-                        <div class="d-flex mb-4">
-                            <i class="fas fa-phone-alt text-primary me-3 mt-1"></i>
-                            <div>
-                                <h5 class="fw-bold">Phone</h5>
-                                <p class="mb-0">+1 (555) 123-4567 (24/7 Hotline)</p>
-                            </div>
-                        </div>
-                        <div class="d-flex mb-4">
-                            <i class="fas fa-envelope text-primary me-3 mt-1"></i>
-                            <div>
-                                <h5 class="fw-bold">Email</h5>
-                                <p class="mb-0">info-shieldx.com</p>
-                            </div>
-                        </div>
-                        <div class="social-links mt-5">
-                            <h5 class="fw-bold mb-3">Follow Us</h5>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle me-2"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle me-2"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle me-2"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-circle me-2"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-7">
-                    <div class="card border-0 shadow">
-                        <div class="card-body p-4">
-                            <h3 class="fw-bold mb-4">Send Us a Message</h3>
-                            <form>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="name" class="form-label">Your Name</label>
-                                        <input type="text" class="form-control" id="name" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="email" class="form-label">Your Email</label>
-                                        <input type="email" class="form-control" id="email" required>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="subject" class="form-label">Subject</label>
-                                    <input type="text" class="form-control" id="subject" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="message" class="form-label">Message</label>
-                                    <textarea class="form-control" id="message" rows="5" required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-danger px-4">Send Message</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="section-header text-center mb-5">
+          <h2 class="display-4 fw-bold">Contact Us</h2>
+          <p class="lead">Get in touch for a free security consultation</p>
+          <div class="divider bg-danger mx-auto"></div>
         </div>
+        <div class="row">
+          <div class="col-lg-5 mb-5 mb-lg-0">
+            <div class="contact-info">
+              <h3 class="fw-bold mb-4">Our Office</h3>
+              <div class="d-flex mb-4">
+                <i class="fas fa-map-marker-alt text-primary me-3 mt-1"></i>
+                <div>
+                  <h5 class="fw-bold">Address</h5>
+                  <p class="mb-0">123 Security Avenue, Safe City, SC 12345</p>
+                </div>
+              </div>
+              <div class="d-flex mb-4">
+                <i class="fas fa-phone-alt text-primary me-3 mt-1"></i>
+                <div>
+                  <h5 class="fw-bold">Phone</h5>
+                  <p class="mb-0">+1 (555) 123-4567 (24/7 Hotline)</p>
+                </div>
+              </div>
+              <div class="d-flex mb-4">
+                <i class="fas fa-envelope text-primary me-3 mt-1"></i>
+                <div>
+                  <h5 class="fw-bold">Email</h5>
+                  <p class="mb-0">info-shieldx.com</p>
+                </div>
+              </div>
+              <div class="social-links mt-5">
+                <h5 class="fw-bold mb-3">Follow Us</h5>
+                <a href="#"
+                  class="btn btn-outline-primary btn-sm rounded-circle me-2"><i
+                    class="fab fa-facebook-f"></i></a>
+                <a href="#"
+                  class="btn btn-outline-primary btn-sm rounded-circle me-2"><i
+                    class="fab fa-twitter"></i></a>
+                <a href="#"
+                  class="btn btn-outline-primary btn-sm rounded-circle me-2"><i
+                    class="fab fa-linkedin-in"></i></a>
+                <a href="#"
+                  class="btn btn-outline-primary btn-sm rounded-circle me-2"><i
+                    class="fab fa-instagram"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="card border-0 shadow">
+              <div class="card-body p-4">
+                <h3 class="fw-bold mb-4">Send Us a Message</h3>
+                <form>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label for="name" class="form-label">Your Name</label>
+                      <input type="text" class="form-control" id="name"
+                        required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="email" class="form-label">Your Email</label>
+                      <input type="email" class="form-control" id="email"
+                        required>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" id="subject"
+                      required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" rows="5"
+                      required></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-danger px-4">Send
+                    Message</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!--Footer -->
-<app-footer></app-footer>
+    <app-footer></app-footer>
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

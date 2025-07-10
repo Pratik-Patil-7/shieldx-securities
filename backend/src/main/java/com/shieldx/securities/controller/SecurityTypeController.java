@@ -2,8 +2,9 @@ package com.shieldx.securities.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,26 +15,36 @@ import com.shieldx.securities.service.SecurityTypeService;
 
 @RestController
 @RequestMapping("/api/security")
-@CrossOrigin(origins = "*") 
+@CrossOrigin(origins = "*")
 public class SecurityTypeController {
 
-	@Autowired
-	private SecurityTypeService securityTypeService;
+	private final SecurityTypeService securityTypeService;
+
+	public SecurityTypeController(SecurityTypeService securityTypeService) {
+		this.securityTypeService = securityTypeService;
+	}
 
 	@GetMapping("/types")
-	public ResponseEntity<List<String>> getAllSecurityTypes() {
-		return ResponseEntity.ok(securityTypeService.getSecurityType());
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<List<SecurityType>> getAllSecurityTypes(Authentication authentication) {
+		Integer userId = Integer.parseInt(authentication.getName());
+		System.out.println("Fetching security types for user ID: " + userId);
+		return ResponseEntity.ok(securityTypeService.getAllSecurityTypes());
 	}
 
 	@GetMapping("/levels")
-	public ResponseEntity<List<String>> getAllSecurityLevels() {
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<List<String>> getAllSecurityLevels(Authentication authentication) {
+		Integer userId = Integer.parseInt(authentication.getName());
+		System.out.println("Fetching security levels for user ID: " + userId);
 		return ResponseEntity.ok(securityTypeService.getSecurityLevel());
 	}
 
 	@GetMapping("/pricing")
-	public ResponseEntity<List<SecurityType>> getAllPricing() {
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<List<SecurityType>> getAllPricing(Authentication authentication) {
+		Integer userId = Integer.parseInt(authentication.getName());
+		System.out.println("Fetching security pricing for user ID: " + userId);
 		return ResponseEntity.ok(securityTypeService.getAllPricing());
 	}
-	
-	
 }

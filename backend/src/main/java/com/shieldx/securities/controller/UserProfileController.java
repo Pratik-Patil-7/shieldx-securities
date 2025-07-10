@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/users/profile")
+@CrossOrigin(origins = "*")
 public class UserProfileController {
 
 	private final UserProfileService userProfileService;
@@ -33,6 +35,7 @@ public class UserProfileController {
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<UserProfileDTO> getProfile(Authentication authentication) {
 		Integer userId = Integer.parseInt(authentication.getName());
+		System.out.println(userId);
 		return ResponseEntity.ok(userProfileService.getUserProfileByUserId(userId));
 	}
 

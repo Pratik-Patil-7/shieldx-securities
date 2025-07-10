@@ -14,6 +14,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './core/services/auth.service';
 import { HomeComponent } from './home/home/home.component';
+import { RouterModule } from '@angular/router';
+
 
 @NgModule({
   declarations: [
@@ -22,14 +24,17 @@ import { HomeComponent } from './home/home/home.component';
     FooterComponent,
     UserMenuComponent,
     AdminMenuComponent,
-    HomeComponent
+    HomeComponent,
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule.forRoot([]),
+
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }],
   bootstrap: [AppComponent]

@@ -1,0 +1,129 @@
+/* registration.component.css */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2c3e50, #1a1a2e);
+  padding: 2rem;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 800px;
+  overflow: hidden;
+}
+
+.auth-header {
+  background: #e74c3c;
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.auth-header .logo {
+  margin-bottom: 1rem;
+}
+
+.auth-header h2 {
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.auth-header p {
+  opacity: 0.9;
+  margin-bottom: 0;
+}
+
+.auth-form {
+  padding: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: #e74c3c;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+}
+
+.btn-auth {
+  width: 100%;
+  padding: 0.75rem;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-auth:hover {
+  background: #c0392b;
+}
+
+.btn-auth:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #e74c3c;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.text-primary {
+  color: #e74c3c !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 1rem;
+  }
+
+  .auth-header {
+    padding: 1.5rem;
+  }
+
+  .auth-form {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .auth-header h2 {
+    font-size: 1.5rem;
+  }
+}

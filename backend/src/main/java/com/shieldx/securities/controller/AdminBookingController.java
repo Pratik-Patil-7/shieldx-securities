@@ -32,7 +32,7 @@ public class AdminBookingController {
 	@PutMapping("/{id}/assign")
 	public ResponseEntity<String> assignBouncer(@PathVariable("id") Integer bookingId,
 			@RequestBody AssignBouncerRequest request) {
-		bookingService.assignBouncer(bookingId, request.getBouncerId());
+//		bookingService.assignBouncer(bookingId, request.getBouncerId());
 		return ResponseEntity.ok("Bouncer assigned successfully");
 	}
 }

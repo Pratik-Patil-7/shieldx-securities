@@ -1,0 +1,68 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">{{ existingVip ? 'Edit' : 'Add New' }} VIP Person</h4>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-success" *ngIf="successMessage">
+            {{ successMessage }}
+          </div>
+          <div class="alert alert-danger" *ngIf="errorMessage">
+            {{ errorMessage }}
+          </div>
+
+          <form (ngSubmit)="onSubmit()">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" [(ngModel)]="vipPerson.name" name="name" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" [(ngModel)]="vipPerson.email" name="email" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Mobile</label>
+                <input type="tel" class="form-control" [(ngModel)]="vipPerson.mobile" name="mobile" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Gender</label>
+                <select class="form-select" [(ngModel)]="vipPerson.gender" name="gender">
+                  <option value="">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" [(ngModel)]="vipPerson.dateOfBirth" name="dateOfBirth">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Profession</label>
+                <input type="text" class="form-control" [(ngModel)]="vipPerson.profession" name="profession">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Address</label>
+                <textarea class="form-control" [(ngModel)]="vipPerson.address" name="address" rows="3"></textarea>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Reason for Security</label>
+                <textarea class="form-control" [(ngModel)]="vipPerson.reasonForSecurity" name="reasonForSecurity" rows="3" required></textarea>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                  {{ existingVip ? 'Update' : 'Create' }}
+                </button>
+                <button type="button" class="btn btn-outline-secondary ms-2" routerLink="/vip">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
