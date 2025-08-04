@@ -9,8 +9,16 @@ import org.springframework.stereotype.Service;
 
 import com.shieldx.securities.dto.BookingRequest;
 import com.shieldx.securities.dto.BookingResponse;
-import com.shieldx.securities.model.*;
-import com.shieldx.securities.repository.*;
+import com.shieldx.securities.model.Booking;
+import com.shieldx.securities.model.Bouncer;
+import com.shieldx.securities.model.SecurityType;
+import com.shieldx.securities.model.User;
+import com.shieldx.securities.model.VipPerson;
+import com.shieldx.securities.repository.BookingRepository;
+import com.shieldx.securities.repository.BouncerRepository;
+import com.shieldx.securities.repository.SecurityTypeRepository;
+import com.shieldx.securities.repository.UserRepository;
+import com.shieldx.securities.repository.VIPpersonRepository;
 
 @Service
 public class BookingService {
@@ -29,6 +37,9 @@ public class BookingService {
 
 	@Autowired
 	private BouncerRepository bouncerRepository;
+	
+	@Autowired
+    private EmailService emailService;
 
 	public double calculateBookingCost(BookingRequest request) {
 		SecurityType securityType = securityTypeRepository.findById(request.getSecurityTypeId())
@@ -81,16 +92,11 @@ public class BookingService {
 				.collect(Collectors.toList());
 	}
 
-	public BookingResponse getBookingDetails(Integer userId, Integer bookingId) {
-		Booking booking = bookingRepository.findById(bookingId)
-				.orElseThrow(() -> new RuntimeException("Booking not found"));
-
-		if (!booking.getUser().getUserId().equals(userId)) {
-			throw new RuntimeException("Unauthorized access");
-		}
-
-		return mapToBookingResponse(booking);
-	}
+	  public BookingResponse getBookingDetails(Integer userId, Integer bookingId) {
+	        Booking booking = bookingRepository.findById(bookingId)
+	                .orElseThrow(() -> new RuntimeException("Booking not found"));
+	        return mapToBookingResponse(booking); // Admin can view any booking
+	    }
 
 	public List<Booking> getBookingsByUserAndStatus(Integer userId, String status) {
 		return bookingRepository.findByUserIdAndStatus(userId, status);
@@ -123,14 +129,44 @@ public class BookingService {
 				.collect(Collectors.toList());
 	}
 
+//	public void approveBooking(Integer bookingId) {
+//		Booking booking = bookingRepository.findById(bookingId)
+//				.orElseThrow(() -> new RuntimeException("Booking not found"));
+//
+//		booking.setStatus("confirmed");
+//		bookingRepository.save(booking);
+//	}
+
 	public void approveBooking(Integer bookingId) {
-		Booking booking = bookingRepository.findById(bookingId)
-				.orElseThrow(() -> new RuntimeException("Booking not found"));
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-		booking.setStatus("confirmed");
-		bookingRepository.save(booking);
-	}
+        booking.setStatus("confirmed");
+        bookingRepository.save(booking);
 
+        // Trigger email with payment QR code
+        emailService.sendPaymentRequestEmail(booking.getUser().getEmail(), bookingId, booking.getTotalPrice());
+    }
+
+    public void assignBouncer(Integer bookingId, Integer bouncerId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        Bouncer bouncer = bouncerRepository.findById(bouncerId)
+                .orElseThrow(() -> new RuntimeException("Bouncer not found"));
+
+        if (!"confirmed".equalsIgnoreCase(booking.getStatus())) {
+            throw new RuntimeException("Booking must be confirmed to assign a bouncer");
+        }
+
+        List<Bouncer> bouncers = booking.getBouncers();
+        if (!bouncers.contains(bouncer)) {
+            bouncers.add(bouncer);
+            booking.setBouncers(bouncers);
+            bookingRepository.save(booking);
+        }
+    }
+	
+	
 	private BookingResponse mapToBookingResponse(Booking booking) {
 		List<Integer> bouncerIds = booking.getBouncers().stream().map(Bouncer::getBouncerId)
 				.collect(Collectors.toList());

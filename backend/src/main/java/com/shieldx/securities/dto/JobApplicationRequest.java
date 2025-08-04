@@ -10,6 +10,7 @@ public class JobApplicationRequest {
     private String email;
     private String mobile;
     private LocalDate dob;
+//    private int userId;
     private String gender;
     private String address;
     private String qualification;

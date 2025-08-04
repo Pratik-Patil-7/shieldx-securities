@@ -1,6 +1,7 @@
 package com.shieldx.securities.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,10 +60,34 @@ public class VipPersonService {
 
 
 
-	public List<VipPerson> getVipPersonsByUserId(Integer userId) {
-		return vipPersonRepository.findByUserId(userId);
-	}
+	public List<VipPersonDto> getVipPersonsByUserId(Integer userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+        return vipPersonRepository.findByUserId(userId)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 
+    private VipPersonDto convertToDto(VipPerson entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity cannot be null");
+        }
+        VipPersonDto dto = new VipPersonDto();
+        dto.setVipId(entity.getVipId());
+        dto.setName(entity.getName());
+        dto.setEmail(entity.getEmail());
+        dto.setMobile(entity.getMobile());
+        dto.setGender(entity.getGender());
+        dto.setDateOfBirth(entity.getDateOfBirth());
+        dto.setAddress(entity.getAddress());
+        dto.setProfession(entity.getProfession());
+        dto.setReasonForSecurity(entity.getReasonForSecurity());
+        dto.setUserId(entity.getUser() != null ? entity.getUser().getUserId() : null);
+        return dto;
+    }
+    
 	private void mapDtoToEntity(VipPersonDto dto, VipPerson entity) {
 		entity.setName(dto.getName());
 		entity.setEmail(dto.getEmail());

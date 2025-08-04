@@ -8,52 +8,76 @@ import org.springframework.stereotype.Service;
 
 import com.shieldx.securities.dto.DashboardStatsResponse;
 import com.shieldx.securities.dto.UserResponse;
+import com.shieldx.securities.dto.UserWithStatusResponse;
+import com.shieldx.securities.model.Login;
 import com.shieldx.securities.model.User;
 import com.shieldx.securities.repository.BookingRepository;
 import com.shieldx.securities.repository.JobApplicationRepository;
+import com.shieldx.securities.repository.LoginRepository;
 import com.shieldx.securities.repository.PaymentRepository;
 import com.shieldx.securities.repository.UserRepository;
 
 @Service
 public class AdminService {
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private BookingRepository bookingRepository;
+	@Autowired
+	private BookingRepository bookingRepository;
 
-    @Autowired
-    private PaymentRepository paymentRepository;
+	@Autowired
+	private PaymentRepository paymentRepository;
 
-    @Autowired
-    private JobApplicationRepository jobApplicationRepository;
+	@Autowired
+	private JobApplicationRepository jobApplicationRepository;
+	
+	@Autowired
+	private LoginRepository loginRepo;
 
-    public DashboardStatsResponse getDashboardStats() {
-        long totalUsers = userRepository.count();
-        long totalBookings = bookingRepository.count();
-        long totalApplications = jobApplicationRepository.count();
-        long totalPayments = paymentRepository.count();
-        return new DashboardStatsResponse(totalUsers, totalBookings, totalApplications, totalPayments);
+	public DashboardStatsResponse getDashboardStats() {
+		long totalUsers = userRepository.count();
+		long totalBookings = bookingRepository.count();
+		long totalApplications = jobApplicationRepository.count();
+		long totalPayments = paymentRepository.count();
+		return new DashboardStatsResponse(totalUsers, totalBookings, totalApplications, totalPayments);
+	}
+
+	public List<UserResponse> getAllUsers() {
+		return userRepository.findAll().stream()
+				.map(user -> new UserResponse(user.getUserId(), user.getFirstName(), user.getLastName(),
+						user.getUsername(), user.getEmail(), user.getMobile(), user.getAddress()))
+				.collect(Collectors.toList());
+	}
+
+	public UserResponse getUserDetails(Integer userId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+		return new UserResponse(user.getUserId(), user.getFirstName(), user.getLastName(), user.getUsername(),
+				user.getEmail(), user.getMobile(), user.getAddress());
+	}
+
+	public void deactivateUser(Integer userId) {
+	    Login login = loginRepo.findByUserId(userId)
+	        .orElseThrow(() -> new RuntimeException("Login not found for userId: " + userId));
+
+	    login.setStatus("deactivate");
+	    loginRepo.save(login);
+	}
+	
+    public String toggleUserStatus(Integer userId) {
+        Login login = loginRepo.findLoginWithUserByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Login not found for userId: " + userId));
+
+        String newStatus = login.getStatus().equalsIgnoreCase("active") ? "deactivate" : "active";
+        login.setStatus(newStatus);
+        loginRepo.save(login);
+        
+        return newStatus;
     }
 
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(user -> new UserResponse(user.getUserId(), user.getFirstName(), user.getLastName(),
-                                             user.getUsername(), user.getEmail(), user.getMobile(), user.getAddress()))
-                .collect(Collectors.toList());
+    public List<UserWithStatusResponse> getAllUsersWithStatus() {
+        return loginRepo.findAllWithUser();
     }
 
-    public UserResponse getUserDetails(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return new UserResponse(user.getUserId(), user.getFirstName(), user.getLastName(),
-                               user.getUsername(), user.getEmail(), user.getMobile(), user.getAddress());
-    }
 
-    public void deactivateUser(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        userRepository.delete(user);
-    }
 }

@@ -10,6 +10,7 @@ import { JobsComponent } from './jobs/jobs.component';
 import { MybookingsComponent } from './mybookings/mybookings.component';
 import { VipListComponent } from './vip/vip-list/vip-list.component';
 import { VipFormComponent } from './vip/vip-form/vip-form.component';
+import { UserMenuComponent } from '../shared/components/user-menu/user-menu.component';
 
 
 @NgModule({
@@ -19,12 +20,14 @@ import { VipFormComponent } from './vip/vip-form/vip-form.component';
     PaymentsComponent,
     JobsComponent,
     MybookingsComponent,
+    UserMenuComponent
   ],
   imports: [
     CommonModule,
     UserRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+
 
   ]
 })

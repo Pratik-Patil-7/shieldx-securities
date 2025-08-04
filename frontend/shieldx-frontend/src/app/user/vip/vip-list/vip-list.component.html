@@ -2,8 +2,10 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>VIP Persons</h2>
     <div>
-      <button class="btn btn-primary me-2" routerLink="/vip/new">Add VIP</button>
-      <button class="btn btn-outline-primary" routerLink="/vip/self">Add Self</button>
+      <button class="btn btn-primary me-2" routerLink="/vip/new">Add
+        VIP</button>
+      <button class="btn btn-outline-primary" routerLink="/user-dashboard">
+        dashboard</button>
     </div>
   </div>
 
@@ -31,8 +33,12 @@
               <td>{{ vip.mobile }}</td>
               <td>{{ vip.address }}</td>
               <td>
-                <button class="btn btn-sm btn-primary me-2" [routerLink]="['/vip/edit', vip.vipId]">Edit</button>
-                <button class="btn btn-sm btn-danger" (click)="deleteVipPerson(vip.vipId)">Delete</button>
+                <button
+                  class="btn btn-sm btn-primary me-2"
+                  (click)="openEditModal(vip)"
+                  [disabled]="isLoading">
+                  Edit
+                </button>
               </td>
             </tr>
             <tr *ngIf="vipPersons.length === 0">
@@ -40,6 +46,186 @@
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit VIP Modal -->
+  <div
+    class="modal fade"
+    id="editVipModal"
+    tabindex="-1"
+    aria-labelledby="editVipModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editVipModalLabel">Edit VIP Person</h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeEditModal()"
+            aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Add *ngIf to ensure selectedVip is not null -->
+          <form *ngIf="selectedVip" #editForm="ngForm"
+            (ngSubmit)="updateVipPerson()">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  [(ngModel)]="selectedVip.name"
+                  required
+                  #name="ngModel"
+                  [class.is-invalid]="name.invalid && name.touched" />
+                <div class="invalid-feedback"
+                  *ngIf="name.invalid && name.touched">
+                  Name is required
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  [(ngModel)]="selectedVip.email"
+                  required
+                  email
+                  #email="ngModel"
+                  [class.is-invalid]="email.invalid && email.touched" />
+                <div class="invalid-feedback"
+                  *ngIf="email.invalid && email.touched">
+                  Please enter a valid email
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="mobile" class="form-label">Mobile</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="mobile"
+                  name="mobile"
+                  [(ngModel)]="selectedVip.mobile"
+                  required
+                  pattern="[0-9]{10}"
+                  #mobile="ngModel"
+                  [class.is-invalid]="mobile.invalid && mobile.touched" />
+                <div class="invalid-feedback"
+                  *ngIf="mobile.invalid && mobile.touched">
+                  Please enter a valid 10-digit mobile number
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="gender" class="form-label">Gender</label>
+                <select
+                  class="form-select"
+                  id="gender"
+                  name="gender"
+                  [(ngModel)]="selectedVip.gender"
+                  required
+                  #gender="ngModel"
+                  [class.is-invalid]="gender.invalid && gender.touched">
+                  <option value disabled>Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div class="invalid-feedback"
+                  *ngIf="gender.invalid && gender.touched">
+                  Gender is required
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="dateOfBirth" class="form-label">Date of
+                  Birth</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="dateOfBirth"
+                  name="dateOfBirth"
+                  [(ngModel)]="selectedVip.dateOfBirth"
+                  required
+                  #dateOfBirth="ngModel"
+                  [class.is-invalid]="dateOfBirth.invalid && dateOfBirth.touched" />
+                <div class="invalid-feedback"
+                  *ngIf="dateOfBirth.invalid && dateOfBirth.touched">
+                  Date of Birth is required
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="profession" class="form-label">Profession</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="profession"
+                  name="profession"
+                  [(ngModel)]="selectedVip.profession"
+                  required
+                  #profession="ngModel"
+                  [class.is-invalid]="profession.invalid && profession.touched" />
+                <div class="invalid-feedback"
+                  *ngIf="profession.invalid && profession.touched">
+                  Profession is required
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Address</label>
+              <textarea
+                class="form-control"
+                id="address"
+                name="address"
+                [(ngModel)]="selectedVip.address"
+                required
+                #address="ngModel"
+                [class.is-invalid]="address.invalid && address.touched"></textarea>
+              <div class="invalid-feedback"
+                *ngIf="address.invalid && address.touched">
+                Address is required
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="reasonForSecurity" class="form-label">Reason for
+                Security</label>
+              <textarea
+                class="form-control"
+                id="reasonForSecurity"
+                name="reasonForSecurity"
+                [(ngModel)]="selectedVip.reasonForSecurity"
+                required
+                #reasonForSecurity="ngModel"
+                [class.is-invalid]="reasonForSecurity.invalid && reasonForSecurity.touched"></textarea>
+              <div class="invalid-feedback"
+                *ngIf="reasonForSecurity.invalid && reasonForSecurity.touched">
+                Reason for Security is required
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            (click)="resetForm()">Reset</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="updateVipPerson()"
+            [disabled]="!editForm || editForm.invalid || isLoading">
+            Update
+          </button>
+          <button type="button" class="btn btn-outline-danger"
+            (click)="closeEditModal()">Close</button>
+        </div>
       </div>
     </div>
   </div>

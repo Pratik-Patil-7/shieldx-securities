@@ -127,27 +127,27 @@ onChangePassword(form: NgForm): void {
   this.isLoading = true;
   this.errorMessage = '';
 
-  this.authService.changePassword(
-    this.passwordData.currentPassword,
-    this.passwordData.newPassword
-  ).subscribe({
-    next: () => {
-      this.isChangingPassword = false;
-      this.errorMessage = 'Password updated successfully!';
-      this.isLoading = false;
-      this.passwordData = { currentPassword: '', newPassword: '' };
-      setTimeout(() => this.errorMessage = '', 3000);
-    },
-    error: (error: HttpErrorResponse) => {
-      this.isLoading = false;
-      if (error.status === 403) {
-        this.errorMessage = 'Session expired or invalid current password. Please login again.';
-        this.authService.logout();
-      } else {
-        this.errorMessage = error.error?.message || 'Failed to update password. Please try again.';
-      }
-    }
-  });
+  // this.authService.changePassword(
+  //   this.passwordData.currentPassword,
+  //   this.passwordData.newPassword
+  // ).subscribe({
+  //   next: () => {
+  //     this.isChangingPassword = false;
+  //     this.errorMessage = 'Password updated successfully!';
+  //     this.isLoading = false;
+  //     this.passwordData = { currentPassword: '', newPassword: '' };
+  //     setTimeout(() => this.errorMessage = '', 3000);
+  //   },
+  //   error: (error: HttpErrorResponse) => {
+  //     this.isLoading = false;
+  //     if (error.status === 403) {
+  //       this.errorMessage = 'Session expired or invalid current password. Please login again.';
+  //       this.authService.logout();
+  //     } else {
+  //       this.errorMessage = error.error?.message || 'Failed to update password. Please try again.';
+  //     }
+  //   }
+  // });
 }
 
   private clearSuccessMessage(): void {

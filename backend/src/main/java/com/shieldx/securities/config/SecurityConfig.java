@@ -33,7 +33,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()  // Allow all auth endpoints
+                .requestMatchers("/api/auth/**").permitAll()  
                 .requestMatchers("/api/bookings/**", "/api/users/**", "/api/payments/**", "/api/jobs/**","/api/vip/**","/api/security/**").authenticated()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().denyAll()

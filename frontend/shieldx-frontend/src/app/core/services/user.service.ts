@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 export class UserService {
   private apiUrl = 'http://localhost:8080/api/users/profile';
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   private getAuthHeaders(): HttpHeaders {
     const token = this.authService.getToken();
@@ -27,14 +27,14 @@ export class UserService {
     });
   }
 
-updatePassword(passwordData: { currentPassword: string, newPassword: string }): Observable<{message: string}> {
-  return this.http.put<{message: string}>(
-    `${this.apiUrl}/password`,
-    passwordData,
-    {
-      headers: this.getAuthHeaders()
-    }
-  );
-}
+  updatePassword(passwordData: { currentPassword: string, newPassword: string }): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(
+      `${this.apiUrl}/password`,
+      passwordData,
+      {
+        headers: this.getAuthHeaders()
+      }
+    );
+  }
 }
 

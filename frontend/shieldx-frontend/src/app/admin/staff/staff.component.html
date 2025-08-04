@@ -1,1 +1,341 @@
-<p>staff works!</p>
+<app-admin-menu></app-admin-menu>
+
+<div class="container-fluid py-4">
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom py-3">
+      <ul class="nav nav-tabs card-header-tabs">
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="currentTab === 'applications'"
+            (click)="currentTab = 'applications'">
+            <i class="bi bi-people-fill me-2"></i>Job Applications
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="currentTab === 'add-bouncer'"
+            (click)="currentTab = 'add-bouncer'">
+            <i class="bi bi-person-plus-fill me-2"></i>Add Bouncer
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card-body p-0">
+      <!-- Applications Tab -->
+      <div *ngIf="currentTab === 'applications'">
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2">Loading applications...</p>
+        </div>
+
+        <div *ngIf="!isLoading && applications.length === 0"
+          class="text-center py-4">
+          <i class="bi bi-file-earmark-text text-muted fs-1"></i>
+          <p class="mt-2 text-muted">No applications found</p>
+        </div>
+
+        <div *ngIf="!isLoading && applications.length > 0"
+          class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-4">Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Experience</th>
+                <th>Status</th>
+                <th class="pe-4 text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let app of applications" class="align-middle">
+                <td class="ps-4 fw-semibold">{{ app.name || 'N/A' }}</td>
+                <td>{{ app.email || 'N/A' }}</td>
+                <td>{{ app.mobile || 'N/A' }}</td>
+                <td>{{ app.experience || 'N/A' }}</td>
+                <td>
+                  <span class="badge rounded-pill py-2 px-3"
+                    [ngClass]="getStatusBadgeClass(app.status)">
+                    {{ app.status || 'UNKNOWN' }}
+                  </span>
+                </td>
+                <td class="pe-4 text-end">
+                  <div class="d-flex justify-content-end">
+                    <button
+                      *ngIf="app.status?.toUpperCase() === 'PENDING' && !isProcessing"
+                      class="btn btn-sm btn-success me-2"
+                      (click)="approveApplication(app.applicationId)">
+                      <i class="bi bi-check-circle me-1"></i> Approve
+                    </button>
+                    <button
+                      *ngIf="app.status?.toUpperCase() === 'PENDING' && !isProcessing"
+                      class="btn btn-sm btn-danger me-2"
+                      (click)="rejectApplication(app.applicationId)">
+                      <i class="bi bi-x-circle me-1"></i> Reject
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary"
+                      (click)="openApplicationDetails(applicationDetailsModal, app)">
+                      <i class="bi bi-eye me-1"></i> View
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Add Bouncer Tab -->
+      <div *ngIf="currentTab === 'add-bouncer'" class="p-4">
+        <h5 class="mb-4">
+          <i class="bi bi-person-plus-fill text-primary me-2"></i>Add New
+          Bouncer
+        </h5>
+
+        <form [formGroup]="bouncerForm" (ngSubmit)="addBouncer()">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="name"
+                formControlName="name"
+                [ngClass]="{'is-invalid': bouncerForm.get('name')?.invalid && bouncerForm.get('name')?.touched}">
+              <div
+                *ngIf="bouncerForm.get('name')?.invalid && bouncerForm.get('name')?.touched"
+                class="invalid-feedback">
+                <div *ngIf="bouncerForm.get('name')?.errors?.['required']">Name
+                  is required</div>
+                <div *ngIf="bouncerForm.get('name')?.errors?.['minlength']">Name
+                  must be at least 2 characters</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email"
+                formControlName="email"
+                [ngClass]="{'is-invalid': bouncerForm.get('email')?.invalid && bouncerForm.get('email')?.touched}">
+              <div
+                *ngIf="bouncerForm.get('email')?.invalid && bouncerForm.get('email')?.touched"
+                class="invalid-feedback">
+                <div
+                  *ngIf="bouncerForm.get('email')?.errors?.['required']">Email
+                  is required</div>
+                <div *ngIf="bouncerForm.get('email')?.errors?.['email']">Please
+                  enter a valid email</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="mobile" class="form-label">Mobile</label>
+              <input type="tel" class="form-control" id="mobile"
+                formControlName="mobile"
+                [ngClass]="{'is-invalid': bouncerForm.get('mobile')?.invalid && bouncerForm.get('mobile')?.touched}">
+              <div
+                *ngIf="bouncerForm.get('mobile')?.invalid && bouncerForm.get('mobile')?.touched"
+                class="invalid-feedback">
+                <div
+                  *ngIf="bouncerForm.get('mobile')?.errors?.['required']">Mobile
+                  number is required</div>
+                <div
+                  *ngIf="bouncerForm.get('mobile')?.errors?.['pattern']">Please
+                  enter a valid mobile number (10-15 digits)</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="gender" class="form-label">Gender</label>
+              <select class="form-select" id="gender" formControlName="gender"
+                [ngClass]="{'is-invalid': bouncerForm.get('gender')?.invalid && bouncerForm.get('gender')?.touched}">
+                <option value>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              <div
+                *ngIf="bouncerForm.get('gender')?.invalid && bouncerForm.get('gender')?.touched"
+                class="invalid-feedback">
+                Gender is required
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="age" class="form-label">Age</label>
+              <input type="number" class="form-control" id="age"
+                formControlName="age"
+                [ngClass]="{'is-invalid': bouncerForm.get('age')?.invalid && bouncerForm.get('age')?.touched}">
+              <div
+                *ngIf="bouncerForm.get('age')?.invalid && bouncerForm.get('age')?.touched"
+                class="invalid-feedback">
+                <div *ngIf="bouncerForm.get('age')?.errors?.['required']">Age is
+                  required</div>
+                <div *ngIf="bouncerForm.get('age')?.errors?.['min']">Minimum age
+                  is 18</div>
+                <div *ngIf="bouncerForm.get('age')?.errors?.['max']">Maximum age
+                  is 65</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="isArmed" class="form-label">Armed Status</label>
+              <select class="form-select" id="isArmed" formControlName="isArmed"
+                [ngClass]="{'is-invalid': bouncerForm.get('isArmed')?.invalid && bouncerForm.get('isArmed')?.touched}">
+                <option value>Select Armed Status</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <div
+                *ngIf="bouncerForm.get('isArmed')?.invalid && bouncerForm.get('isArmed')?.touched"
+                class="invalid-feedback">
+                Armed status is required
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="address" class="form-label">Address</label>
+              <textarea class="form-control" id="address"
+                formControlName="address" rows="2"
+                [ngClass]="{'is-invalid': bouncerForm.get('address')?.invalid && bouncerForm.get('address')?.touched}"></textarea>
+              <div
+                *ngIf="bouncerForm.get('address')?.invalid && bouncerForm.get('address')?.touched"
+                class="invalid-feedback">
+                Address is required
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="qualification"
+                class="form-label">Qualification</label>
+              <input type="text" class="form-control" id="qualification"
+                formControlName="qualification"
+                [ngClass]="{'is-invalid': bouncerForm.get('qualification')?.invalid && bouncerForm.get('qualification')?.touched}">
+              <div
+                *ngIf="bouncerForm.get('qualification')?.invalid && bouncerForm.get('qualification')?.touched"
+                class="invalid-feedback">
+                Qualification is required
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="experience" class="form-label">Experience</label>
+              <input type="text" class="form-control" id="experience"
+                formControlName="experience"
+                [ngClass]="{'is-invalid': bouncerForm.get('experience')?.invalid && bouncerForm.get('experience')?.touched}">
+              <div
+                *ngIf="bouncerForm.get('experience')?.invalid && bouncerForm.get('experience')?.touched"
+                class="invalid-feedback">
+                Experience is required
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              <button type="submit" class="btn btn-primary px-4"
+                [disabled]="bouncerForm.invalid || isProcessing">
+                <span *ngIf="!isProcessing">
+                  <i class="bi bi-plus-circle me-2"></i>Add Bouncer
+                </span>
+                <span *ngIf="isProcessing">
+                  <span class="spinner-border spinner-border-sm me-2"
+                    role="status" aria-hidden="true"></span>
+                  Processing...
+                </span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #applicationDetailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <i class="bi bi-person-badge me-2"></i>Application Details
+    </h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()"
+      aria-label="Close"></button>
+  </div>
+
+  <div class="modal-body" *ngIf="selectedApplication">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <h6 class="border-bottom pb-2 mb-3">
+          <i class="bi bi-person-lines-fill me-2"></i>Personal Information
+        </h6>
+        <p><strong>Name:</strong> {{ selectedApplication.name || 'N/A' }}</p>
+        <p><strong>Email:</strong> {{ selectedApplication.email || 'N/A' }}</p>
+        <p><strong>Mobile:</strong> {{ selectedApplication.mobile || 'N/A'
+          }}</p>
+        <p><strong>Date of Birth:</strong> {{ formatDate(selectedApplication.dob
+          || '') }}</p>
+        <p><strong>Gender:</strong> {{ selectedApplication.gender || 'N/A'
+          }}</p>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <h6 class="border-bottom pb-2 mb-3">
+          <i class="bi bi-geo-alt-fill me-2"></i>Address
+        </h6>
+        <p *ngIf="selectedApplication.address">{{ selectedApplication.address
+          }}</p>
+        <p *ngIf="!selectedApplication.address" class="text-muted">Not
+          provided</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <h6 class="border-bottom pb-2 mb-3">
+          <i class="bi bi-briefcase-fill me-2"></i>Professional Details
+        </h6>
+        <p><strong>Qualification:</strong> {{ selectedApplication.qualification
+          || 'N/A' }}</p>
+        <p><strong>Experience:</strong> {{ selectedApplication.experience ||
+          'N/A' }}</p>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <h6 class="border-bottom pb-2 mb-3">
+          <i class="bi bi-file-earmark-fill me-2"></i>Documents
+        </h6>
+        <p><strong>Resume:</strong>
+          <span *ngIf="selectedApplication.resumeUrl">
+            <a [href]="selectedApplication.resumeUrl" target="_blank"
+              class="text-decoration-none">
+              <i class="bi bi-download me-1"></i>Download Resume
+            </a>
+          </span>
+          <span *ngIf="!selectedApplication.resumeUrl" class="text-muted">Not
+            provided</span>
+        </p>
+        <p><strong>Photo:</strong>
+          <span *ngIf="selectedApplication.photoUrl">
+            <a [href]="selectedApplication.photoUrl" target="_blank"
+              class="text-decoration-none">
+              <i class="bi bi-eye-fill me-1"></i>View Photo
+            </a>
+          </span>
+          <span *ngIf="!selectedApplication.photoUrl" class="text-muted">Not
+            provided</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button *ngIf="selectedApplication?.status === 'PENDING'" type="button"
+      class="btn btn-success"
+      (click)="approveApplication(selectedApplication!.applicationId)">
+      <i class="bi bi-check-circle me-1"></i>Approve
+    </button>
+    <button *ngIf="selectedApplication?.status === 'PENDING'" type="button"
+      class="btn btn-danger"
+      (click)="rejectApplication(selectedApplication!.applicationId)">
+      <i class="bi bi-x-circle me-1"></i>Reject
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+      <i class="bi bi-x-lg me-1"></i>Close
+    </button>
+  </div>
+</ng-template>

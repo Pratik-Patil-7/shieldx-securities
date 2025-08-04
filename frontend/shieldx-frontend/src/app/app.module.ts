@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './shared/components/header/header.component';
@@ -15,16 +16,19 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './core/services/auth.service';
 import { HomeComponent } from './home/home/home.component';
 import { RouterModule } from '@angular/router';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { AdminModule } from './admin/admin.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    UserMenuComponent,
+    // UserMenuComponent,
     AdminMenuComponent,
     HomeComponent,
+
 
   ],
   imports: [
@@ -34,6 +38,22 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([]),
+    NgbModule,
+    NgbDropdownModule,
+    AdminModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+      progressBar: true,
+      enableHtml: true,
+      // Disable animations if needed:
+      // animation: {
+      //   enter: '',
+      //   leave: ''
+      // }
+    })
 
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }],

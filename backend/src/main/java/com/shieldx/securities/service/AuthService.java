@@ -32,10 +32,10 @@ public class AuthService {
 	private OtpVerificationRepository otpVerificationRepository;
 
 	@Autowired
-	private JwtService jwtService; // Assume a service for JWT generation
+	private JwtService jwtService; 
 
 	@Autowired
-	private EmailService emailService; // Assume a service for sending emails
+	private EmailService emailService; 
 
 	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 

@@ -36,7 +36,7 @@ public class VIPPersonController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<VipPerson>> getAllVipPersons(Authentication authentication) {
+    public ResponseEntity<List<VipPersonDto>> getAllVipPersons(Authentication authentication) {
         Integer userId = Integer.parseInt(authentication.getName());
         System.out.println("Fetching all VIP persons for user ID: " + userId);
         return ResponseEntity.ok(vipService.getVipPersonsByUserId(userId));

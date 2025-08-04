@@ -4,8 +4,7 @@ import lombok.Data;
 
 @Data
 public class VerifyPaymentRequest {
-    private Integer paymentId;
-    private String razorpayPaymentId;
-    private String razorpayOrderId;
-    private String razorpaySignature;
+	private Integer bookingId;
+    private String paymentId;
+    private Integer bouncerId;
 }

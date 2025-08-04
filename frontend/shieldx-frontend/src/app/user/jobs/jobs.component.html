@@ -1,1 +1,293 @@
-<p>jobs works!</p>
+<div class="jobs-container">
+  <!-- Top Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="#">ShieldX</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="router.url === '/jobs'" (click)="navigateTo('/jobs')">
+              <i class="bi bi-briefcase me-1"></i> Current Openings
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [class.active]="router.url === '/job-apply'" (click)="toggleForm()">
+              <i class="bi bi-file-earmark-plus me-1"></i> Apply for Job
+            </a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center">
+          <button class="btn btn-outline-light me-2" (click)="goBack()">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+          </button>
+          <button class="btn btn-outline-danger" (click)="logout()">
+            <i class="bi bi-box-arrow-right me-1"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container-fluid py-4">
+    <div class="row mb-4">
+      <div class="col-12 d-flex justify-content-between align-items-center">
+        <h2 class="fw-bold text-primary">Job Applications</h2>
+      </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading job applications...</p>
+    </div>
+
+    <!-- Pending Applications Table -->
+    <div *ngIf="!isLoading" class="card border-0 shadow-sm">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom py-3">
+        <h5 class="mb-0 fw-bold">Pending Job Applications</h5>
+        <button class="btn btn-sm btn-primary" (click)="toggleForm()">
+          Apply Now <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+      <div class="card-body p-0">
+        <div *ngIf="applications.length === 0" class="text-center py-4">
+          <i class="bi bi-file-earmark-x text-muted fs-1"></i>
+          <p class="mt-2 text-muted">No pending applications found</p>
+          <button class="btn btn-primary mt-2" (click)="toggleForm()">
+            <i class="bi bi-plus-circle me-1"></i> Apply for a Job
+          </button>
+        </div>
+
+        <div *ngIf="applications.length > 0" class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-4">Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <!-- <th>Applied Date</th> -->
+                <th>Status</th>
+                <th class="pe-4 text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let application of applications" class="align-middle">
+                <td class="ps-4 fw-semibold">{{ application.name }}</td>
+                <td>{{ application.email }}</td>
+                <td>{{ application.mobile }}</td>
+                <!-- <td>{{ formatDate(application.appliedDate) }}</td> -->
+                <td>
+                  <span class="badge rounded-pill py-2 px-3 d-inline-flex align-items-center"
+                        [ngClass]="getStatusBadgeClass(application.status)">
+                    <i class="bi me-1" [class]="getStatusIcon(application.status)"></i>
+                    {{ application.status }}
+                  </span>
+                </td>
+                <td class="pe-4 text-end">
+                  <button class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                          (click)="viewApplication(application.id)">
+                    <i class="bi bi-eye me-1"></i> View
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Application Form -->
+    <div class="card border-0 shadow-sm mt-4" *ngIf="showForm">
+      <div class="card-header bg-white border-bottom py-3">
+        <h5 class="mb-0 fw-bold">Apply for a Job</h5>
+        <button class="btn btn-sm btn-outline-secondary float-end" (click)="toggleForm()">Close</button>
+      </div>
+      <div class="card-body">
+        <form #jobForm="ngForm" (ngSubmit)="onSubmit(jobForm)" class="needs-validation" novalidate>
+          <div class="row g-3">
+            <!-- Name -->
+            <div class="col-md-6">
+              <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="name" name="name" [(ngModel)]="application.name"
+                     required pattern="[A-Za-z\s]+" placeholder="Enter your full name">
+              <div class="invalid-feedback">
+                Please enter a valid name (letters and spaces only).
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" id="email" name="email" [(ngModel)]="application.email"
+                     required email placeholder="Enter your email">
+              <div class="invalid-feedback">
+                Please enter a valid email address.
+              </div>
+            </div>
+
+            <!-- Mobile -->
+            <div class="col-md-6">
+              <label for="mobile" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+              <input type="tel" class="form-control" id="mobile" name="mobile" [(ngModel)]="application.mobile"
+                     required pattern="\+?[1-9]\d{1,14}" placeholder="+1234567890">
+              <div class="invalid-feedback">
+                Please enter a valid mobile number.
+              </div>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="col-md-6">
+              <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="dob" name="dob" [(ngModel)]="application.dob"
+                     required [max]="maxDate">
+              <div class="invalid-feedback">
+                Please enter a valid date of birth.
+              </div>
+            </div>
+
+            <!-- Gender -->
+            <div class="col-md-6">
+              <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+              <select class="form-select" id="gender" name="gender" [(ngModel)]="application.gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a gender.
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="col-md-6">
+              <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="address" name="address" [(ngModel)]="application.address"
+                     required placeholder="Enter your address">
+              <div class="invalid-feedback">
+                Please enter your address.
+              </div>
+            </div>
+
+            <!-- Qualification -->
+            <div class="col-md-6">
+              <label for="qualification" class="form-label">Qualification <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="qualification" name="qualification" [(ngModel)]="application.qualification"
+                     required placeholder="Enter your highest qualification">
+              <div class="invalid-feedback">
+                Please enter your qualification.
+              </div>
+            </div>
+
+            <!-- Experience -->
+            <div class="col-md-6">
+              <label for="experience" class="form-label">Experience <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="experience" name="experience" [(ngModel)]="application.experience"
+                     required placeholder="e.g., 2 years">
+              <div class="invalid-feedback">
+                Please enter your experience.
+              </div>
+            </div>
+
+            <!-- Success/Error Message -->
+            <div *ngIf="successMessage" class="col-12">
+              <div class="alert alert-success mt-3" role="alert">
+                {{ successMessage }}
+              </div>
+            </div>
+            <div *ngIf="errorMessage" class="col-12">
+              <div class="alert alert-danger mt-3" role="alert">
+                {{ errorMessage }}
+              </div>
+            </div>
+
+            <!-- Form Buttons -->
+            <div class="col-12 mt-4 d-flex justify-content-end">
+              <button type="button" class="btn btn-outline-secondary me-2" (click)="resetForm(jobForm)">
+                Reset
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="jobForm.invalid || isSubmitting">
+                <i class="bi bi-send me-1"></i> Submit Application
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- View Application Modal -->
+    <div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="viewApplicationModalLabel">View Application Details</h5>
+            <button type="button" class="btn-close btn-close-white" (click)="closeModal()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" *ngIf="selectedApplication">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Application ID:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.applicationId }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Name:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.name }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Email:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.email }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Mobile:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.mobile }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Date of Birth:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.dob | date:'MM/dd/yyyy' }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Gender:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.gender }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Address:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.address }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Qualification:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.qualification }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Experience:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.experience }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Resume URL:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.resumeUrl || 'Not uploaded' }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Photo URL:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.photoUrl || 'Not uploaded' }}</p>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Status:</label>
+                <p class="form-control-plaintext">{{ selectedApplication.status }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

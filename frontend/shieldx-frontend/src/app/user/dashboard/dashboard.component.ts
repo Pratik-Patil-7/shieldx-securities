@@ -3,6 +3,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { Router } from '@angular/router';
 import { BookingService } from 'src/app/core/services/booking.service';
 import { Booking } from 'src/app/core/services/booking.service';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,6 +35,9 @@ export class DashboardComponent implements OnInit {
     this.loadUserData();
     this.loadBookings();
   }
+
+
+
 
   loadUserData(): void {
     const user = this.authService.getCurrentUser();

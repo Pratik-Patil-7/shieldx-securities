@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.shieldx.securities.dto.VipPersonDto;
 import com.shieldx.securities.model.VipPerson;
 
 public interface VIPpersonRepository extends JpaRepository<VipPerson, Integer> {

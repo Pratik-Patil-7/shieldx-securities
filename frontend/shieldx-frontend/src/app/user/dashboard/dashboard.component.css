@@ -3,10 +3,6 @@
   background-color: #f8f9fa;
 }
 
-.navbar {
-  padding: 0.75rem 1rem;
-}
-
 .icon-circle {
   width: 48px;
   height: 48px;
@@ -44,10 +40,6 @@
 
 .table tbody tr:hover {
   background-color: rgba(0, 123, 255, 0.03);
-}
-
-.btn-outline-primary {
-  border-width: 2px;
 }
 
 @media (max-width: 768px) {
@@ -88,9 +80,5 @@
 
   .table tbody td:last-child {
     border-bottom: none;
-  }
-
-  .table tbody td.text-end {
-    justify-content: flex-end;
   }
 }

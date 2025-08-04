@@ -1,13 +1,15 @@
 package com.shieldx.securities.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.shieldx.securities.dto.UserWithStatusResponse;
 import com.shieldx.securities.model.Login;
-import com.shieldx.securities.model.User;
 
 @Repository
 public interface LoginRepository extends JpaRepository<Login, Integer> {
@@ -36,4 +38,11 @@ public interface LoginRepository extends JpaRepository<Login, Integer> {
 
 	@Query("SELECT l FROM Login l WHERE l.user.userId = :userId")
 	Optional<Login> findByUserUserId(Integer userId);
+
+	@Query("SELECT new com.shieldx.securities.dto.UserWithStatusResponse(u.userId, u.firstName, u.lastName, u.email, u.mobile, u.address, l.status) "
+			+ "FROM User u JOIN Login l ON u.userId = l.user.userId")
+	List<UserWithStatusResponse> findAllWithUser();
+
+	@Query("SELECT l FROM Login l JOIN FETCH l.user WHERE l.user.userId = :userId")
+	Optional<Login> findLoginWithUserByUserId(@Param("userId") Integer userId);
 }

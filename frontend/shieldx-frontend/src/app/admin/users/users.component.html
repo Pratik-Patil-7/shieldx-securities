@@ -1,1 +1,91 @@
-<p>users works!</p>
+<div class="d-flex flex-column min-vh-100">
+  <app-admin-menu class="sticky-top"></app-admin-menu>
+  <div class="container-fluid py-2 py-md-4 flex-grow-1">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-center border-bottom py-3 gap-3">
+        <h5 class="mb-0 fw-bold">Manage Users</h5>
+        <div class="d-flex w-100 w-md-auto">
+          <div class="input-group" style="max-width: 100%; width: 250px;">
+            <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()">
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body p-0">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2">Loading users...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && filteredUsers.length === 0" class="text-center py-4">
+          <i class="bi bi-people text-muted fs-1"></i>
+          <p class="mt-2 text-muted">No users found</p>
+        </div>
+
+        <!-- Users Table -->
+        <div *ngIf="!isLoading && filteredUsers.length > 0" class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="ps-3 ps-md-4">Name</th>
+                <th>Email</th>
+                <th class="d-none d-md-table-cell">Mobile</th>
+                <th class="pe-3 pe-md-4 text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of paginatedUsers; trackBy: trackByUser" class="align-middle">
+                <td class="ps-3 ps-md-4 fw-semibold">{{ user.firstName }} {{ user.lastName }}</td>
+                <td class="text-truncate" style="max-width: 150px;" [title]="user.email">
+                  {{ user.email }}
+                </td>
+                <td class="d-none d-md-table-cell">{{ user.mobile || 'N/A' }}</td>
+                <td class="pe-3 pe-md-4 text-end">
+                  <button class="btn btn-sm rounded-pill px-2 px-md-3"
+                          [ngClass]="{
+                            'btn-outline-danger': user.status === 'active',
+                            'btn-outline-success': user.status === 'deactivate'
+                          }"
+                          (click)="toggleUserStatus(user)"
+                          [disabled]="processingUserId === user.userId">
+                    <span *ngIf="processingUserId === user.userId"
+                          class="spinner-border spinner-border-sm me-1"
+                          role="status"
+                          aria-hidden="true"></span>
+                    <i *ngIf="processingUserId !== user.userId" class="bi me-1"
+                       [ngClass]="{
+                         'bi-person-x': user.status === 'active',
+                         'bi-person-check': user.status === 'deactivate'
+                       }"></i>
+                    <span>
+                      {{ user.status === 'active' ? 'Deactivate' : 'Activate' }}
+                    </span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="filteredUsers.length > itemsPerPage" class="p-3 border-top bg-white">
+          <ngb-pagination
+            [collectionSize]="filteredUsers.length"
+            [(page)]="currentPage"
+            [pageSize]="itemsPerPage"
+            [maxSize]="5"
+            [rotate]="true"
+            [boundaryLinks]="true"
+            (pageChange)="onPageChange($event)"
+            class="d-flex justify-content-center">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

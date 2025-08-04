@@ -60,7 +60,7 @@
                 <option *ngFor="let type of securityTypes" [value]="type.stId">
                   {{ type.description }} ({{ type.levelName }}) -
                   ₹{{ type.pricePerDay | number:'1.2-2' }}/day
-                  <span *ngIf="type.isArmed" class="ms-2">🔫 Armed</span>
+                  <span *ngIf="type.isArmed" class="ms-2"> Armed</span>
                 </option>
               </select>
             </div>

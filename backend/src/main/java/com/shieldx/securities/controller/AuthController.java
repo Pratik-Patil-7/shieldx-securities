@@ -1,5 +1,8 @@
 package com.shieldx.securities.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -58,9 +61,11 @@ public class AuthController {
     }
     
     @PostMapping("/send-otp")
-    public ResponseEntity<String> sendOtp(@RequestBody OtpRequest request) {
+    public ResponseEntity<Map<String, String>>sendOtp(@RequestBody OtpRequest request) {
         authService.sendOtp(request.getEmail());
-        return ResponseEntity.ok("OTP sent successfully");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "OTP sent successfully");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/verify-otp")

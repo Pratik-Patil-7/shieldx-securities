@@ -13,7 +13,7 @@ export interface VipPerson {
   profession: string;
   address: string;
   reasonForSecurity: string;
-   userId: number;
+  userId: number;
 }
 
 export interface AddVipPerson {
@@ -34,7 +34,7 @@ export interface AddVipPerson {
 export class VipService {
   private apiUrl = 'http://localhost:8080/api/vip';
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   private getHeaders() {
     return new HttpHeaders({

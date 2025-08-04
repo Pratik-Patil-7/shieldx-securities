@@ -33,6 +33,7 @@ public class JobApplicationService {
 		application.setEmail(request.getEmail());
 		application.setMobile(request.getMobile());
 		application.setDob(request.getDob());
+		application.setUser(user);
 		application.setGender(request.getGender());
 		application.setAddress(request.getAddress());
 		application.setQualification(request.getQualification());
@@ -75,5 +76,13 @@ public class JobApplicationService {
 				application.getMobile(), application.getDob(), application.getGender(), application.getAddress(),
 				application.getQualification(), application.getExperience(), application.getResumeUrl(),
 				application.getPhotoUrl(), application.getStatus());
+	}
+
+	public List<JobApplicationResponse> getPendingApplications(Integer userId) {
+		return jobApplicationRepository.findPendingApplications(userId);
+	}
+
+	public JobApplicationResponse getApplicationById(Integer id, Integer userId) {
+		return jobApplicationRepository.findByIdAndUserId(id, userId);
 	}
 }

@@ -1,1 +1,193 @@
-<p>bookings works!</p>
+<app-admin-menu></app-admin-menu>
+<div class="container-fluid py-4">
+  <div class="card shadow-sm">
+    <div
+      class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-center py-3">
+      <h5 class="mb-3 mb-md-0 fw-bold">Manage Bookings</h5>
+      <div class="w-100 w-md-auto">
+        <div class="input-group">
+          <span class="input-group-text bg-transparent">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" class="form-control"
+            placeholder="Search by ID, location or status"
+            [(ngModel)]="searchTerm"
+            (input)="filterBookings()">
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading bookings...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoading && bookings.length === 0" class="text-center py-4">
+        <i class="bi bi-calendar-x text-muted fs-1"></i>
+        <p class="mt-2 text-muted">No bookings found</p>
+      </div>
+
+      <!-- Bookings Table -->
+      <div *ngIf="!isLoading && bookings.length > 0" class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">ID</th>
+              <th>Location</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Bouncers</th>
+              <th class="pe-4 text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let booking of paginatedBookings">
+              <td class="ps-4 fw-semibold">#{{ booking.bookingId }}</td>
+              <td>{{ booking.location }}</td>
+              <td>{{ formatDate(booking.startDate) }}</td>
+              <td>
+                <span class="badge"
+                  [ngClass]="getStatusBadgeClass(booking.status)">
+                  {{ booking.status | titlecase }}
+                </span>
+              </td>
+              <td class="fw-semibold">₹{{ booking.totalPrice | number:'1.2-2'
+                }}</td>
+              <td>{{ getBouncerIds(booking) }}</td>
+              <td class="pe-4 text-end">
+                <div class="btn-group btn-group-sm" role="group">
+                  <!-- Details Button -->
+                  <button class="btn btn-outline-primary"
+                    (click)="openDetailsModal(bookingDetailsModal, booking); $event.stopPropagation()">
+                    <i class="bi bi-eye me-1"></i> Details
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div *ngIf="filteredBookings.length > itemsPerPage"
+          class="p-3 border-top">
+          <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0">
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link"
+                  (click)="currentPage = currentPage - 1">Previous</a>
+              </li>
+              <li class="page-item"
+                *ngFor="let page of [].constructor(totalPages); let i = index"
+                [class.active]="currentPage === i + 1">
+                <a class="page-link" (click)="currentPage = i + 1">{{ i + 1
+                  }}</a>
+              </li>
+              <li class="page-item"
+                [class.disabled]="currentPage === totalPages">
+                <a class="page-link"
+                  (click)="currentPage = currentPage + 1">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Details Modal -->
+  <ng-template #bookingDetailsModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Booking Details #{{ modalBooking?.bookingId
+        }}</h5>
+      <button type="button" class="btn-close" (click)="modal.dismiss()"
+        aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div *ngIf="modalBooking" class="row g-3">
+        <div class="col-md-6">
+          <div class="card mb-3">
+            <div class="card-header bg-light">
+              <h6 class="mb-0">Booking Information</h6>
+            </div>
+            <div class="card-body">
+              <p><strong>Status:</strong>
+                <span class="badge"
+                  [ngClass]="getStatusBadgeClass(modalBooking.status)">
+                  {{ modalBooking.status | titlecase }}
+                </span>
+              </p>
+              <p><strong>Location:</strong> {{ modalBooking.location }}</p>
+              <p><strong>Dates:</strong> {{ formatDate(modalBooking.startDate)
+                }} - {{ formatDate(modalBooking.endDate) }}</p>
+              <p><strong>Time:</strong> {{ modalBooking.startTime }} - {{
+                modalBooking.endTime }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mb-3">
+            <div class="card-header bg-light">
+              <h6 class="mb-0">Security Details</h6>
+            </div>
+            <div class="card-body">
+              <p><strong>Bouncers:</strong> {{ getBouncerIds(modalBooking)
+                }}</p>
+              <p><strong>Bouncer Count:</strong> {{ modalBooking.bouncerCount
+                }}</p>
+              <p><strong>Security Type:</strong> {{ modalBooking.securityTypeId
+                }}</p>
+              <p><strong>Total Amount:</strong> ₹{{ modalBooking.totalPrice |
+                number:'1.2-2' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Actions -->
+        <div class="col-12 mt-3">
+          <div class="d-flex justify-content-end gap-2">
+            <!-- Approve Button (only for PENDING status) -->
+            <button *ngIf="modalBooking.status === 'PENDING'"
+              class="btn btn-success"
+              [disabled]="isApproving"
+              (click)="approveBooking(modalBooking.bookingId); modal.close()">
+              <span *ngIf="!isApproving">
+                <i class="bi bi-check-circle me-1"></i> Approve Booking
+              </span>
+              <span *ngIf="isApproving">
+                <span class="spinner-border spinner-border-sm me-1"
+                  role="status" aria-hidden="true"></span>
+                Approving...
+              </span>
+            </button>
+
+            <!-- Reject Button (only for PENDING status) -->
+            <button *ngIf="modalBooking.status === 'PENDING'"
+              class="btn btn-danger"
+              (click)="rejectBooking(modalBooking.bookingId); modal.close()">
+              <i class="bi bi-x-circle me-1"></i> Reject Booking
+            </button>
+
+            <!-- Payment Button (only for APPROVED status) -->
+            <button *ngIf="modalBooking.status === 'APPROVED'"
+              class="btn btn-primary"
+              (click)="simulatePayment(modalBooking)">
+              <i class="bi bi-credit-card me-1"></i> Process Payment
+            </button>
+
+            <!-- Close Button -->
+            <button type="button" class="btn btn-secondary"
+              (click)="modal.close()">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
